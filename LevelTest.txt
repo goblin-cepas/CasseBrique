@@ -1,0 +1,15 @@
+rectangle A;
+    rectangle B;
+    rectangle C;
+    A.x.x=20;
+    A.x.y=20;
+    A.y.x=20;
+    A.y.y=20;
+    B.x.x=20;
+    B.x.y=20;
+    B.y.x=20;
+    B.y.y=20;
+    std::vector<Brick> bric;
+    std::vector<Ball> bal;
+    std::vector<Paddle> pad;
+    Level Test(25,1,1,A,B,bric,bal,pad,0,5,2);
