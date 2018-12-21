@@ -15,7 +15,22 @@ class Paddle {
     int m_paddleResistance;
   public:
     //Builder/Destructor
+    ////////////////////////////////////////////////////////////
+    /// Input : rectangle,color,int
+    ///
+    /// Result : build a paddle with parameter
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
     Paddle(rectangle,Color,int);
+  
+    ////////////////////////////////////////////////////////////
+    /// Input : none
+    ///
+    /// Result : default destructor
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
     ~Paddle();
 
   //Accessors
@@ -90,6 +105,7 @@ class Paddle {
  void move();
  void move(rectangle);
   ////////////////////////////////////////////////////////////
+
   /// Input : Bonus&
   ///
   /// Result : check if bonus need to be set

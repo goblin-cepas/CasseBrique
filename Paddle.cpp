@@ -40,20 +40,21 @@ void Paddle::setPaddleResistance(int NewResistance){
 
 //Method
 
+
 void Paddle::move(rectangle B){
   int ch;
   while((ch = getch()) != 'q')
   {
     switch (ch) {
 
-        case KEY_LEFT:
-    B.LeftBottom.x --;
+        case KEY_LEFT:    B.LeftBottom.x --;
     setPaddlePattern(B);
     break;
 
         case KEY_RIGHT:
     B.LeftBottom.x ++;
     setPaddlePattern(B);
+
     break;
         }
 
@@ -63,9 +64,11 @@ void Paddle::move(rectangle B){
 void Paddle::bonus(Bonus &B){
     clocks newClock;
     newClock.c=20;
+
     if (getPaddlePattern().LeftBottom.x && getPaddlePattern().LeftBottom.y &&
         getPaddlePattern().RightTop.x && getPaddlePattern().RightTop.y == B.getBonusPattern().LeftBottom.x && B.getBonusPattern().LeftBottom.y &&
         B.getBonusPattern().RightTop.x && B.getBonusPattern().RightTop.x){
             //B.setClock(newClock);
+
         }
 }
