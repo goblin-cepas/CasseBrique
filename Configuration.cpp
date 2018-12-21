@@ -304,22 +304,13 @@ bool Configuration::create() {
     int numberBrick = 0;
     int numberBonus = 100;
     int posX = 0;
-    int posY = 20;
+    int posY = 10;
     int i = 0;
 
     while (i < 5) {
-
-        std::cout << numberBrick << std::endl;
-        std::cout << this->m_NBrickOne[i] << std::endl;
-        std::cout << this->m_NBrickTwo[i] << std::endl;
-        std::cout << this->m_NBrickThree[i] << std::endl;
-        std::cout << this->m_NBrickFour[i] << std::endl;
-        std::cout << this->m_NBrickFive[i] << std::endl;
         numberBrick = this->m_NBrickOne[i] + this->m_NBrickTwo[i] + this->m_NBrickThree[i] + this->m_NBrickFour[i] + this->m_NBrickFive[i];
 
         while (numberBrick > 0) {
-            std::cout << "numBrick : " << numberBrick << std::endl;
-
             int randPattern = rand() % m_BrickPatterns.size();
 
             vector2 vect1brickRect;
@@ -369,16 +360,15 @@ bool Configuration::create() {
                 }
             } else {
                 posX++;
-                std::cout << "posX : " << posX << std::endl;
             }
             if (posX >= windowWidth) {
                 posX = 0;
                 posY++;
                 if (posY >= windowHeight) {
-                    posY = 20;
-                    std::cout << "posY : " << posY << std::endl;
+                    posY = 10;
+
                     loop++;
-                    if (loop > 5) {
+                    if (loop > 4) {
                         return false;
                     }
                 }
@@ -418,19 +408,13 @@ bool Configuration::create() {
 }
 
 bool Configuration::brickCollide(rectangle &rect) {
-
-
     for (int i = 0; i < this->m_brickLevel.size(); i++) {
         rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
-        if (((rectTry.LeftBottom.x <= rect.LeftBottom.x) && (rectTry.RightTop.x >= rect.LeftBottom.x)) || ((rectTry.LeftBottom.x <= rect.RightTop.x) && (rectTry.RightTop.x >= rect.RightTop.x))) {
-            if (((rectTry.LeftBottom.y <= rect.LeftBottom.y) && (rectTry.RightTop.y >= rect.LeftBottom.y)) || ((rectTry.LeftBottom.y <= rect.RightTop.y) && (rectTry.RightTop.y >= rect.RightTop.y))) {
-                return true;
-            }
+        if ((((rect.LeftBottom.x >= rectTry.LeftBottom.x) && (rect.LeftBottom.x <= rect.RightTop.x)) || ((rect.RightTop.x >= rectTry.LeftBottom.x) && (rect.RightTop.x <= rect.RightTop.x))) && (((rect.LeftBottom.y >= rectTry.LeftBottom.y) && (rect.LeftBottom.y <= rectTry.RightTop.y)) || ((rect.RightTop.y >= rectTry.LeftBottom.y) && (rect.RightTop.y <= rectTry.RightTop.y)))) {
+            return true;
         }
-
-
-        return false;
     }
+    return false;
 }
 
 bool Configuration::Init() {
