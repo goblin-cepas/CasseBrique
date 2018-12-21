@@ -22,7 +22,6 @@ Configuration::Configuration(std::string fileName) : m_fileName(fileName) {
 
 }
 
-
 std::string Configuration::getFileName() {
     return this->m_fileName;
 }
@@ -62,57 +61,30 @@ bool Configuration::read() {
             }
 
             if (Pattern) {
-                std::cout << lineBuffer << std::endl;
-                //std::vector<Rectangle> m_BrickPatterns;
                 std::size_t width = lineBuffer.find("width");
-
                 std::size_t height = lineBuffer.find("height");
-
-                if (width != std::string::npos) {
-                    std::cout << "result width est " << lineBuffer[width];
-                    std::cout << " at position " << width << '\n';
-                }
-
-                if (height != std::string::npos) {
-                    std::cout << "result height est " << lineBuffer[height];
-                    std::cout << " at position " << height << '\n';
-                }
-
-                std::size_t trouve = lineBuffer.find_first_not_of("abcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|");
-                if (trouve != std::string::npos) {
-                    std::cout << "result trouve est " << lineBuffer[trouve];
-                    std::cout << " at position " << trouve << '\n';
-                }
 
                 if (height > width) {
                     std::string widthstr = lineBuffer.substr(width, height - 1);
                     std::size_t widthnumber = widthstr.find_first_not_of("abcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|");
-                    std::cout << " widthnumber est " << widthstr[widthnumber] << '\n';
+
                     std::string heightstr = lineBuffer.substr(height, Size - 1);
                     std::size_t heightnumber = heightstr.find_first_not_of("abcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|");
-                    std::cout << " heightnumber est " << heightstr[heightnumber] << '\n';
+
                     vector2 patternvect;
                     patternvect.x = widthstr[widthnumber] - '0';
-                    std::cout << " patternvect x est " << patternvect.x << '\n';
                     patternvect.y = heightstr[heightnumber] - '0';
-                    std::cout << " patternvect y est " << patternvect.y << '\n';
+
                     this->m_BrickPatterns.push_back(patternvect);
-
-                    std::cout << " m_BrickPatterns est " << m_BrickPatterns[m_BrickPatterns.size() - 1].x << " en x est " << m_BrickPatterns[m_BrickPatterns.size() - 1].y << " en y" << '\n';
-
                 } else {
                     std::string widthstr = lineBuffer.substr(width, Size - 1);
                     std::size_t widthnumber = widthstr.find_first_not_of("abcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|");
-                    std::cout << " widthnumber est " << widthstr[widthnumber] << '\n';
                     std::string heightstr = lineBuffer.substr(height, width - 1);
                     std::size_t heightnumber = heightstr.find_first_not_of("abcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|");
-                    std::cout << " heightnumber est " << heightstr[heightnumber] << '\n';
                     vector2 patternvect;
                     patternvect.x = widthstr[widthnumber] - '0';
                     patternvect.y = heightstr[heightnumber] - '0';
                     this->m_BrickPatterns.push_back(patternvect);
-
-                    std::cout << " m_BrickPatterns est " << m_BrickPatterns[m_BrickPatterns.size() - 1].x << " en x est " << m_BrickPatterns[m_BrickPatterns.size() - 1].y << " en y" << '\n';
                 }
             }
 
@@ -150,12 +122,10 @@ bool Configuration::read() {
                 std::size_t playerJump = lineBuffer.find("playerJump");
                 if (playerLife != std::string::npos) {
                     this->m_playerLife = std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("HLJabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|"), Size - 1).c_str());
-                    std::cout << "result m_playerLife est " << this->m_playerLife << std::endl;
                 }
 
                 if (playerJump != std::string::npos) {
                     this->m_playerJump = std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("HLJabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|"), Size - 1).c_str());
-                    std::cout << "result m_playerJump est " << this->m_playerJump << std::endl;
                 }
             }
 
@@ -163,7 +133,6 @@ bool Configuration::read() {
                 std::size_t scoreHit = lineBuffer.find("scoreHit");
                 if (scoreHit != std::string::npos) {
                     this->m_scoreHit = std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("HLJabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|"), Size - 1).c_str());
-                    std::cout << "result m_scoreHit est " << this->m_scoreHit << std::endl;
                 }
             }
 
@@ -177,14 +146,12 @@ bool Configuration::read() {
 
                 if (NBrick1 != std::string::npos) {
                     this->m_NBrickOne.push_back(std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|%"), Size - 1).c_str()));
-                    std::cout << "Brick 1 " << this->m_NBrickOne[this->m_NBrickOne.size() - 1] << std::endl;
                 }
                 if (NBrick2 != std::string::npos) {
                     this->m_NBrickTwo.push_back(std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|%"), Size - 1).c_str()));
-                    std::cout << "Brick 2 " << this->m_NBrickTwo[this->m_NBrickTwo.size() - 1] << std::endl;
                 }
                 if (NBrick3 != std::string::npos) {
-                    this->m_NBrickTwo.push_back(std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|%"), Size - 1).c_str()));
+                    this->m_NBrickThree.push_back(std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|%"), Size - 1).c_str()));
                 }
                 if (NBrick4 != std::string::npos) {
                     this->m_NBrickFour.push_back(std::atoi(lineBuffer.substr(lineBuffer.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz :;[],.*-+_/\\|%"), Size - 1).c_str()));
@@ -296,9 +263,11 @@ bool Configuration::create() {
     vector2 vect1Paddle;
     vect1Paddle.x = windowWidth / 2 - 2;
     vect1Paddle.y = windowHeight - 1;
+
     vector2 vect2Paddle;
     vect2Paddle.x = windowWidth / 2 + 2;
     vect2Paddle.y = windowHeight;
+
     rectangle rectPaddle;
     rectPaddle.LeftBottom = vect1Paddle;
     rectPaddle.RightTop = vect2Paddle;
@@ -309,9 +278,11 @@ bool Configuration::create() {
     vector2 vect1Ball;
     vect1Ball.x = windowWidth / 2;
     vect1Ball.y = windowHeight - 2;
+
     vector2 vect2Ball;
     vect2Ball.x = windowWidth / 2 + 1;
     vect2Ball.y = windowHeight - 3;
+
     rectangle rectBall;
     rectBall.LeftBottom = vect1Ball;
     rectBall.RightTop = vect2Ball;
@@ -319,6 +290,7 @@ bool Configuration::create() {
     vector2 vectVeloc;
     vectVeloc.x = windowWidth / 2 + 2;
     vectVeloc.y = windowHeight - 4;
+
     velocity veloc;
     veloc.accel = 10.f;
     veloc.direction = vectVeloc;
@@ -329,24 +301,39 @@ bool Configuration::create() {
     srand(time(NULL));
     int loop = 0;
 
-    int numberBonus;
+    int numberBrick = 0;
+    int numberBonus = 100;
     int posX = 0;
     int posY = 20;
     int i = 0;
-    while (i <= 5) {
-        int numberBrick = this->m_NBrickOne[i] + this->m_NBrickTwo[i] + this->m_NBrickThree[i] + this->m_NBrickFour[i] + this->m_NBrickFive[i];
+
+    while (i < 5) {
+
+        std::cout << numberBrick << std::endl;
+        std::cout << this->m_NBrickOne[i] << std::endl;
+        std::cout << this->m_NBrickTwo[i] << std::endl;
+        std::cout << this->m_NBrickThree[i] << std::endl;
+        std::cout << this->m_NBrickFour[i] << std::endl;
+        std::cout << this->m_NBrickFive[i] << std::endl;
+        numberBrick = this->m_NBrickOne[i] + this->m_NBrickTwo[i] + this->m_NBrickThree[i] + this->m_NBrickFour[i] + this->m_NBrickFive[i];
+
         while (numberBrick > 0) {
+            std::cout << "numBrick : " << numberBrick << std::endl;
 
             int randPattern = rand() % m_BrickPatterns.size();
+
             vector2 vect1brickRect;
             vect1brickRect.x = posX;
             vect1brickRect.y = posY;
+
             vector2 vect2brickRect;
             vect2brickRect.x = posX + m_BrickPatterns[randPattern].x;
             vect2brickRect.y = posY + m_BrickPatterns[randPattern].y;
+
             rectangle brickRect;
             brickRect.LeftBottom = vect1brickRect;
             brickRect.RightTop = vect2brickRect;
+
 
             if (!brickCollide(brickRect)) {
                 if (m_NBrickFive[i] > 0) {
@@ -382,35 +369,42 @@ bool Configuration::create() {
                 }
             } else {
                 posX++;
+                std::cout << "posX : " << posX << std::endl;
             }
             if (posX >= windowWidth) {
                 posX = 0;
                 posY++;
                 if (posY >= windowHeight) {
                     posY = 20;
+                    std::cout << "posY : " << posY << std::endl;
                     loop++;
                     if (loop > 5) {
-
                         return false;
                     }
                 }
             }
         }
+
         vector2 vect1rectLevel;
         vect1rectLevel.x = 0;
         vect1rectLevel.y = 0;
+
         vector2 vect2rectLevel;
         vect2rectLevel.x = windowWidth;
         vect2rectLevel.y = windowHeight;
+
         rectangle rectLevel;
         rectLevel.LeftBottom = vect1rectLevel;
         rectLevel.RightTop = vect2rectLevel;
+
         vector2 vect1rectMenu;
         vect1rectMenu.x = 0;
         vect1rectMenu.y = windowHeight + 11;
+
         vector2 vect2rectMenu;
         vect2rectMenu.x = windowWidth;
         vect2rectMenu.y = windowHeight + 1;
+
         rectangle restMenu;
         restMenu.LeftBottom = vect1rectMenu;
         restMenu.RightTop = vect2rectMenu;
@@ -424,14 +418,17 @@ bool Configuration::create() {
 }
 
 bool Configuration::brickCollide(rectangle &rect) {
+
+
     for (int i = 0; i < this->m_brickLevel.size(); i++) {
         rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
-        if (rect.LeftBottom.x >= rectTry.LeftBottom.x && rect.RightTop.x <= rectTry.RightTop.x) {
-            if (rect.LeftBottom.y >= rectTry.LeftBottom.x && rect.RightTop.y <= rectTry.RightTop.y) {
-
+        if (((rectTry.LeftBottom.x <= rect.LeftBottom.x) && (rectTry.RightTop.x >= rect.LeftBottom.x)) || ((rectTry.LeftBottom.x <= rect.RightTop.x) && (rectTry.RightTop.x >= rect.RightTop.x))) {
+            if (((rectTry.LeftBottom.y <= rect.LeftBottom.y) && (rectTry.RightTop.y >= rect.LeftBottom.y)) || ((rectTry.LeftBottom.y <= rect.RightTop.y) && (rectTry.RightTop.y >= rect.RightTop.y))) {
                 return true;
             }
         }
+
+
         return false;
     }
 }
