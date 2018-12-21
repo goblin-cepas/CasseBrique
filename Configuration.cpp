@@ -22,32 +22,15 @@ Configuration::Configuration(std::string fileName) : m_fileName(fileName) {
 
 }
 
-Configuration::Configuration(const Configuration& orig) {
-
-}
-
-Configuration::~Configuration() {
-
-}
 
 std::string Configuration::getFileName() {
     return this->m_fileName;
 }
 
-/*
-Level Configuration::getLevel() {
-    return this->m_level;
-}
- */
 void Configuration::setFileName(std::string New) {
     this->m_fileName = New;
 }
 
-/*
-void Configuration::setLevel(Level New) {
-    this->m_level = New;
-}
- */
 bool Configuration::read() {
     std::string lineBuffer;
 
@@ -310,8 +293,38 @@ bool Configuration::create() {
     Color ballColor(WBLUE);
     Color paddleColor(WBLUE);
 
-    this->m_paddleLevel.push_back(new Paddle(new rectangle(new vector2(windowWidth / 2 - 2, windowHeight - 1), new vector2(windowWidth / 2 + 2, windowHeight)), paddleColor, 400));
-    this->m_brickLevel.push_back(new rectangle(new vector2(windowWidth / 2, windowHeight - 2), new vector2(windowWidth / 2 + 1, windowHeight - 3)), ballColor, new velocity(10.f, new vector2(windowWidth / 2 + 2, windowHeight - 4)), 400);
+    vector2 vect1Paddle;
+    vect1Paddle.x = windowWidth / 2 - 2;
+    vect1Paddle.y = windowHeight - 1;
+    vector2 vect2Paddle;
+    vect2Paddle.x = windowWidth / 2 + 2;
+    vect2Paddle.y = windowHeight;
+    rectangle rectPaddle;
+    rectPaddle.LeftBottom = vect1Paddle;
+    rectPaddle.RightTop = vect2Paddle;
+
+    Paddle paddle(rectPaddle, paddleColor, 400);
+    this->m_paddleLevel.push_back(paddle);
+
+    vector2 vect1Ball;
+    vect1Ball.x = windowWidth / 2;
+    vect1Ball.y = windowHeight - 2;
+    vector2 vect2Ball;
+    vect2Ball.x = windowWidth / 2 + 1;
+    vect2Ball.y = windowHeight - 3;
+    rectangle rectBall;
+    rectBall.LeftBottom = vect1Ball;
+    rectBall.RightTop = vect2Ball;
+
+    vector2 vectVeloc;
+    vectVeloc.x = windowWidth / 2 + 2;
+    vectVeloc.y = windowHeight - 4;
+    velocity veloc;
+    veloc.accel = 10.f;
+    veloc.direction = vectVeloc;
+
+    Ball ball(rectBall, ballColor, veloc, 400);
+    this->m_ballLevel.push_back(ball);
 
     srand(time(NULL));
     int loop = 0;
@@ -323,34 +336,49 @@ bool Configuration::create() {
     while (i <= 5) {
         int numberBrick = this->m_NBrickOne[i] + this->m_NBrickTwo[i] + this->m_NBrickThree[i] + this->m_NBrickFour[i] + this->m_NBrickFive[i];
         while (numberBrick > 0) {
+
             int randPattern = rand() % m_BrickPatterns.size();
-            rectangle brickRect = new rectangle(new vector2(posX, posY), new vector2(posX + m_BrickPatterns[randPattern].x, posY + m_BrickPatterns[randPattern].y));
+            vector2 vect1brickRect;
+            vect1brickRect.x = posX;
+            vect1brickRect.y = posY;
+            vector2 vect2brickRect;
+            vect2brickRect.x = posX + m_BrickPatterns[randPattern].x;
+            vect2brickRect.y = posY + m_BrickPatterns[randPattern].y;
+            rectangle brickRect;
+            brickRect.LeftBottom = vect1brickRect;
+            brickRect.RightTop = vect2brickRect;
+
             if (!brickCollide(brickRect)) {
                 if (m_NBrickFive[i] > 0) {
                     m_NBrickFive[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
-                    this->m_brickLevel.push_back(new Brick(brickRect, this->m_BrickColor[4], (numberBonus <= this->m_Bonus[i]), 5));
+                    Brick brick(brickRect, this->m_BrickColor[4], (numberBonus <= this->m_Bonus[i]), 5);
+                    this->m_brickLevel.push_back(brick);
                 } else if (m_NBrickFour[i] > 0) {
                     m_NBrickFour[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
-                    this->m_brickLevel.push_back(new Brick(brickRect, this->m_BrickColor[3], (numberBonus <= this->m_Bonus[i]), 4));
+                    Brick brick(brickRect, this->m_BrickColor[3], (numberBonus <= this->m_Bonus[i]), 4);
+                    this->m_brickLevel.push_back(brick);
                 } else if (m_NBrickThree[i] > 0) {
                     m_NBrickThree[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
-                    this->m_brickLevel.push_back(new Brick(brickRect, this->m_BrickColor[2], (numberBonus <= this->m_Bonus[i]), 3));
+                    Brick brick(brickRect, this->m_BrickColor[2], (numberBonus <= this->m_Bonus[i]), 3);
+                    this->m_brickLevel.push_back(brick);
                 } else if (m_NBrickTwo[i] > 0) {
                     m_NBrickTwo[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
-                    this->m_brickLevel.push_back(new Brick(brickRect, this->m_BrickColor[1], (numberBonus <= this->m_Bonus[i]), 2));
+                    Brick brick(brickRect, this->m_BrickColor[1], (numberBonus <= this->m_Bonus[i]), 2);
+                    this->m_brickLevel.push_back(brick);
                 } else if (m_NBrickOne[i] > 0) {
                     m_NBrickOne[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
-                    this->m_brickLevel.push_back(new Brick(brickRect, this->m_BrickColor[0], (numberBonus <= this->m_Bonus[i]), 1));
+                    Brick brick(brickRect, this->m_BrickColor[0], (numberBonus <= this->m_Bonus[i]), 1);
+                    this->m_brickLevel.push_back(brick);
                 }
             } else {
                 posX++;
@@ -362,12 +390,33 @@ bool Configuration::create() {
                     posY = 20;
                     loop++;
                     if (loop > 5) {
+
                         return false;
                     }
                 }
             }
         }
-        this->m_levels.push_back(new Level(0, new rectangle(new vector2(0, 0), new vector2(windowWidth, windowHeight)), new rectangle(new vector2(0, windowHeight + 11), new vector2(windowWidth, windowHeight + 1)), this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump));
+        vector2 vect1rectLevel;
+        vect1rectLevel.x = 0;
+        vect1rectLevel.y = 0;
+        vector2 vect2rectLevel;
+        vect2rectLevel.x = windowWidth;
+        vect2rectLevel.y = windowHeight;
+        rectangle rectLevel;
+        rectLevel.LeftBottom = vect1rectLevel;
+        rectLevel.RightTop = vect2rectLevel;
+        vector2 vect1rectMenu;
+        vect1rectMenu.x = 0;
+        vect1rectMenu.y = windowHeight + 11;
+        vector2 vect2rectMenu;
+        vect2rectMenu.x = windowWidth;
+        vect2rectMenu.y = windowHeight + 1;
+        rectangle restMenu;
+        restMenu.LeftBottom = vect1rectMenu;
+        restMenu.RightTop = vect2rectMenu;
+
+        Level level(0, rectLevel, restMenu, this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump);
+        this->m_levels.push_back(level);
         this->m_brickLevel.clear();
         i++;
     }
@@ -379,6 +428,7 @@ bool Configuration::brickCollide(rectangle &rect) {
         rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
         if (rect.LeftBottom.x >= rectTry.LeftBottom.x && rect.RightTop.x <= rectTry.RightTop.x) {
             if (rect.LeftBottom.y >= rectTry.LeftBottom.x && rect.RightTop.y <= rectTry.RightTop.y) {
+
                 return true;
             }
         }
@@ -394,5 +444,10 @@ bool Configuration::Init() {
         std::cerr << "Error Create Method Config" << std::endl;
     }
 
+}
+
+Level& Configuration::getLevel(int levelNumber) {
+    levelNumber--;
+    return this->m_levels[levelNumber];
 }
 
