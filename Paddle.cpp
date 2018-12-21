@@ -39,31 +39,22 @@ void Paddle::setPaddleResistance(int NewResistance){
 }
 
 //Method
-void Paddle::move(){
-    rectangle Move;
-    int ch;
-    Move=this->getPaddlePattern();
+
+
 void Paddle::move(rectangle B){
-  int h=50,w=50;
   int ch;
-  Window plateau(h,w,1,6);
-  plateau.setCouleurBordure(BBLUE);
-  int x=w/2,y=h/2;
-  char p='B';
-  Color col=WBLUE;
-  plateau.print(x,y,p,col);
   while((ch = getch()) != 'q')
   {
     switch (ch) {
 
-        case KEY_LEFT:
-    Move.x.x --;
-    setPaddlePattern(Move);
+        case KEY_LEFT:    B.LeftBottom.x --;
+    setPaddlePattern(B);
     break;
 
         case KEY_RIGHT:
-    Move.x.x ++;
-    setPaddlePattern(Move);
+    B.LeftBottom.x ++;
+    setPaddlePattern(B);
+
     break;
         }
 
@@ -73,9 +64,11 @@ void Paddle::move(rectangle B){
 void Paddle::bonus(Bonus &B){
     clocks newClock;
     newClock.c=20;
-    if (getPaddlePattern().x.x && getPaddlePattern().x.y &&
-        getPaddlePattern().y.x && getPaddlePattern().y.y == B.getBonusPattern().x.x && B.getBonusPattern().x.y &&
-        B.getBonusPattern().y.x && B.getBonusPattern().y.x){
-            B.setClock(newClock);
+
+    if (getPaddlePattern().LeftBottom.x && getPaddlePattern().LeftBottom.y &&
+        getPaddlePattern().RightTop.x && getPaddlePattern().RightTop.y == B.getBonusPattern().LeftBottom.x && B.getBonusPattern().LeftBottom.y &&
+        B.getBonusPattern().RightTop.x && B.getBonusPattern().RightTop.x){
+            //B.setClock(newClock);
+
         }
 }
