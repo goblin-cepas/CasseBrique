@@ -257,54 +257,13 @@ bool Configuration::create() {
     int windowWidth = 60;
     int windowHeight = 50;
 
-    Color ballColor(WBLUE);
-    Color paddleColor(WBLUE);
-
-    vector2 vect1Paddle;
-    vect1Paddle.x = windowWidth / 2 - 2;
-    vect1Paddle.y = windowHeight - 1;
-
-    vector2 vect2Paddle;
-    vect2Paddle.x = windowWidth / 2 + 2;
-    vect2Paddle.y = windowHeight;
-
-    rectangle rectPaddle;
-    rectPaddle.LeftBottom = vect1Paddle;
-    rectPaddle.RightTop = vect2Paddle;
-
-    Paddle paddle(rectPaddle, paddleColor, 400);
-    this->m_paddleLevel.push_back(paddle);
-
-    vector2 vect1Ball;
-    vect1Ball.x = windowWidth / 2;
-    vect1Ball.y = windowHeight - 2;
-
-    vector2 vect2Ball;
-    vect2Ball.x = windowWidth / 2 + 1;
-    vect2Ball.y = windowHeight - 3;
-
-    rectangle rectBall;
-    rectBall.LeftBottom = vect1Ball;
-    rectBall.RightTop = vect2Ball;
-
-    vector2 vectVeloc;
-    vectVeloc.x = windowWidth / 2 + 2;
-    vectVeloc.y = windowHeight - 4;
-
-    velocity veloc;
-    veloc.accel = 10.f;
-    veloc.direction = vectVeloc;
-
-    Ball ball(rectBall, ballColor, veloc, 400);
-    this->m_ballLevel.push_back(ball);
-
     srand(time(NULL));
     int loop = 0;
 
     int numberBrick = 0;
     int numberBonus = 100;
     int posX = 0;
-    int posY = 10;
+    int posY = 11 + windowHeight - 15;
     int i = 0;
 
     while (i < 5) {
@@ -319,7 +278,7 @@ bool Configuration::create() {
 
             vector2 vect2brickRect;
             vect2brickRect.x = posX + m_BrickPatterns[randPattern].x;
-            vect2brickRect.y = posY + m_BrickPatterns[randPattern].y;
+            vect2brickRect.y = posY - m_BrickPatterns[randPattern].y;
 
             rectangle brickRect;
             brickRect.LeftBottom = vect1brickRect;
@@ -363,9 +322,9 @@ bool Configuration::create() {
             }
             if (posX >= windowWidth) {
                 posX = 0;
-                posY++;
-                if (posY >= windowHeight) {
-                    posY = 10;
+                posY--;
+                if (posY <= 0) {
+                    posY = 11 + windowHeight - 15;
 
                     loop++;
                     if (loop > 4) {
@@ -374,30 +333,70 @@ bool Configuration::create() {
                 }
             }
         }
+        vector2 vect1rectMenu;
+        vect1rectMenu.x = 0;
+        vect1rectMenu.y = 10;
+
+        vector2 vect2rectMenu;
+        vect2rectMenu.x = windowWidth;
+        vect2rectMenu.y = 0;
+
+        rectangle restMenu;
+        restMenu.LeftBottom = vect1rectMenu;
+        restMenu.RightTop = vect2rectMenu;
 
         vector2 vect1rectLevel;
         vect1rectLevel.x = 0;
-        vect1rectLevel.y = 0;
+        vect1rectLevel.y = 11 + windowHeight;
 
         vector2 vect2rectLevel;
         vect2rectLevel.x = windowWidth;
-        vect2rectLevel.y = windowHeight;
+        vect2rectLevel.y = 11;
 
         rectangle rectLevel;
         rectLevel.LeftBottom = vect1rectLevel;
         rectLevel.RightTop = vect2rectLevel;
 
-        vector2 vect1rectMenu;
-        vect1rectMenu.x = 0;
-        vect1rectMenu.y = windowHeight + 11;
+        Color ballColor(WBLUE);
+        Color paddleColor(WBLUE);
 
-        vector2 vect2rectMenu;
-        vect2rectMenu.x = windowWidth;
-        vect2rectMenu.y = windowHeight + 1;
+        vector2 vect1Paddle;
+        vect1Paddle.x = windowWidth / 2 - 2;
+        vect1Paddle.y = 11 + windowHeight - 1;
 
-        rectangle restMenu;
-        restMenu.LeftBottom = vect1rectMenu;
-        restMenu.RightTop = vect2rectMenu;
+        vector2 vect2Paddle;
+        vect2Paddle.x = windowWidth / 2 + 2;
+        vect2Paddle.y = windowHeight;
+
+        rectangle rectPaddle;
+        rectPaddle.LeftBottom = vect1Paddle;
+        rectPaddle.RightTop = vect2Paddle;
+
+        Paddle paddle(rectPaddle, paddleColor, 400);
+        this->m_paddleLevel.push_back(paddle);
+
+        vector2 vect1Ball;
+        vect1Ball.x = windowWidth / 2;
+        vect1Ball.y = 11 + windowHeight - 2;
+
+        vector2 vect2Ball;
+        vect2Ball.x = windowWidth / 2 + 1;
+        vect2Ball.y = 11 + windowHeight - 3;
+
+        rectangle rectBall;
+        rectBall.LeftBottom = vect1Ball;
+        rectBall.RightTop = vect2Ball;
+
+        vector2 vectVeloc;
+        vectVeloc.x = 1;
+        vectVeloc.y = -1;
+
+        velocity veloc;
+        veloc.accel = 10.f;
+        veloc.direction = vectVeloc;
+
+        Ball ball(rectBall, ballColor, veloc, 400);
+        this->m_ballLevel.push_back(ball);
 
         Level level(0, rectLevel, restMenu, this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump);
         this->m_levels.push_back(level);
