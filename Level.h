@@ -1,10 +1,9 @@
 #ifndef LEVEL_H
 #define LEVEL_H
+
 #include <iostream>
-extern "C" {
-#include <curses.h>
-}
-#include <iostream>
+#include <vector>
+
 #include "window.h"
 #include "Brick.h"
 #include "Ball.h"
@@ -12,7 +11,6 @@ extern "C" {
 #include "Home.h"
 #include "Score.h"
 
-#include <vector>
 
 class Level {
 private:
@@ -112,7 +110,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    size_t getTabBrick(std::vector<Brick>&) const;
+    std::vector<Brick>&  getTabBrick() ;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Brick>
     ///
@@ -129,7 +127,7 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
 
-    size_t getTabBall(std::vector<Ball>&) const;
+    std::vector<Ball>& getTabBall() ;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<ball>
     ///
@@ -142,7 +140,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    size_t getTabPaddle(std::vector<Ball>&) const;
+    std::vector<Paddle>& getTabPaddle() ;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Paddle>
     ///
@@ -209,7 +207,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    void createMenu();
+    std::vector<playerScore> createMenu();
 
 };
 

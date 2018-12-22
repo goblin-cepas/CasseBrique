@@ -1,7 +1,4 @@
 #include "Level.h"
-extern "C" {
-#include <curses.h>
-}
 #include <iostream>
 #include "window.h"
 #include "Brick.h"
@@ -45,22 +42,22 @@ void Level::setMenuWindowsSize(rectangle NewMenuWindowsSize){
     m_MenuWindowsSize = NewMenuWindowsSize;
 }
 
-size_t Level::getTabBrick(std::vector<Brick>& TabBrick) const{
-    return TabBrick.size();
+std::vector<Brick>& Level::getTabBrick() {
+    return m_TabBrick;
 }
 void Level::setTabBrick(std::vector<Brick> NewTabBrick){
      m_TabBrick = NewTabBrick;
 }
 
-size_t Level::getTabBall(std::vector<Ball>& TabBall) const{
-    return TabBall.size();
+std::vector<Ball>& Level::getTabBall() {
+    return m_TabBall;
 }
 void Level::setTabBall(std::vector<Ball> NewTabBall){
     m_TabBall = NewTabBall;
 }
 
-size_t Level::getTabPaddle(std::vector<Ball>& TabPaddle) const{
-    return TabPaddle.size();
+std::vector<Paddle>& Level::getTabPaddle() {
+    return m_TabPaddle;
 }
 void Level::setTabPaddle(std::vector<Paddle> NewTabPaddle){
     m_TabPaddle = NewTabPaddle;
@@ -87,12 +84,12 @@ void Level::setJump(int NewJump){
     m_Jump = NewJump;
 }
     //method
-void Level::createMenu(){
+std::vector<playerScore> Level::createMenu(){
     Score MenuScore;
     std::vector<playerScore> test;
     test = MenuScore.getScoreTab();
     if (test.size() > 5){
         test.resize(5);
     }
-
+    return test;
 }

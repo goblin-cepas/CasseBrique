@@ -1,12 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
+
 #include "Level.h"
 #include "timer.h"
 
 class Game {
 public:
     Game();
-    Game(Level,timer,bool,bool);
+    Game(Level);
     Game(const Game& orig);
     virtual ~Game();
     
@@ -97,7 +98,7 @@ private:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    void setLevel(Level newLevel);
+    void setLevel(Level& newLevel);
     
     ////////////////////////////////////////////////////////////
     /// Input : a timer structure
