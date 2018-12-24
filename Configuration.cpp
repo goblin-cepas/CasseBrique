@@ -260,6 +260,7 @@ bool Configuration::create() {
     srand(time(NULL));
     int loop = 0;
 
+    int randPattern;
     int numberBrick = 0;
     int numberBonus = 100;
     int posX = 0;
@@ -267,18 +268,20 @@ bool Configuration::create() {
     int i = 0;
 
     while (i < 5) {
+        posX = rand() % m_BrickPatterns.size();
+        posY = 11 + windowHeight - 15;
         numberBrick = this->m_NBrickOne[i] + this->m_NBrickTwo[i] + this->m_NBrickThree[i] + this->m_NBrickFour[i] + this->m_NBrickFive[i];
 
         while (numberBrick > 0) {
-            int randPattern = rand() % m_BrickPatterns.size();
+            randPattern = rand() % m_BrickPatterns.size();
 
             vector2 vect1brickRect;
             vect1brickRect.x = posX;
-            vect1brickRect.y = posY;
+            vect1brickRect.y = posY + m_BrickPatterns[randPattern].y;
 
             vector2 vect2brickRect;
             vect2brickRect.x = posX + m_BrickPatterns[randPattern].x;
-            vect2brickRect.y = posY - m_BrickPatterns[randPattern].y;
+            vect2brickRect.y = posY;
 
             rectangle brickRect;
             brickRect.LeftBottom = vect1brickRect;
@@ -292,40 +295,44 @@ bool Configuration::create() {
                     numberBonus = rand() % 100 + 1;
                     Brick brick(brickRect, this->m_BrickColor[4], (numberBonus <= this->m_Bonus[i]), 5);
                     this->m_brickLevel.push_back(brick);
+                    posX += m_BrickPatterns[randPattern].x + 1;
                 } else if (m_NBrickFour[i] > 0) {
                     m_NBrickFour[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
                     Brick brick(brickRect, this->m_BrickColor[3], (numberBonus <= this->m_Bonus[i]), 4);
                     this->m_brickLevel.push_back(brick);
+                    posX += m_BrickPatterns[randPattern].x + 1;
                 } else if (m_NBrickThree[i] > 0) {
                     m_NBrickThree[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
                     Brick brick(brickRect, this->m_BrickColor[2], (numberBonus <= this->m_Bonus[i]), 3);
                     this->m_brickLevel.push_back(brick);
+                    posX += m_BrickPatterns[randPattern].x + 1;
                 } else if (m_NBrickTwo[i] > 0) {
                     m_NBrickTwo[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
                     Brick brick(brickRect, this->m_BrickColor[1], (numberBonus <= this->m_Bonus[i]), 2);
                     this->m_brickLevel.push_back(brick);
+                    posX += m_BrickPatterns[randPattern].x + 1;
                 } else if (m_NBrickOne[i] > 0) {
                     m_NBrickOne[i]--;
                     numberBrick--;
                     numberBonus = rand() % 100 + 1;
                     Brick brick(brickRect, this->m_BrickColor[0], (numberBonus <= this->m_Bonus[i]), 1);
                     this->m_brickLevel.push_back(brick);
+                    posX += m_BrickPatterns[randPattern].x + 1;
                 }
             } else {
-                posX++;
+                posX += m_BrickPatterns[randPattern].x + 1;
             }
-            if (posX >= windowWidth) {
+            if (posX >= windowWidth - 5) {
                 posX = 0;
                 posY--;
-                if (posY <= 0) {
+                if (posY < 2) {
                     posY = 11 + windowHeight - 15;
-
                     loop++;
                     if (loop > 4) {
                         return false;
@@ -362,11 +369,11 @@ bool Configuration::create() {
 
         vector2 vect1Paddle;
         vect1Paddle.x = windowWidth / 2 - 2;
-        vect1Paddle.y = 11 + windowHeight - 1;
+        vect1Paddle.y = 11 + windowHeight;
 
         vector2 vect2Paddle;
         vect2Paddle.x = windowWidth / 2 + 2;
-        vect2Paddle.y = windowHeight;
+        vect2Paddle.y = 11 + windowHeight - 1;
 
         rectangle rectPaddle;
         rectPaddle.LeftBottom = vect1Paddle;
@@ -398,6 +405,10 @@ bool Configuration::create() {
         Ball ball(rectBall, ballColor, veloc, 400);
         this->m_ballLevel.push_back(ball);
 
+        for (int k = 0; k < this->m_brickLevel.size(); k++) {
+            rectangle recti = this->m_brickLevel[k].getBrickPattern();
+        }
+
         Level level(0, rectLevel, restMenu, this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump);
         this->m_levels.push_back(level);
         this->m_brickLevel.clear();
@@ -409,7 +420,7 @@ bool Configuration::create() {
 bool Configuration::brickCollide(rectangle &rect) {
     for (int i = 0; i < this->m_brickLevel.size(); i++) {
         rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
-        if ((((rect.LeftBottom.x >= rectTry.LeftBottom.x) && (rect.LeftBottom.x <= rect.RightTop.x)) || ((rect.RightTop.x >= rectTry.LeftBottom.x) && (rect.RightTop.x <= rect.RightTop.x))) && (((rect.LeftBottom.y >= rectTry.LeftBottom.y) && (rect.LeftBottom.y <= rectTry.RightTop.y)) || ((rect.RightTop.y >= rectTry.LeftBottom.y) && (rect.RightTop.y <= rectTry.RightTop.y)))) {
+        if ((((rect.LeftBottom.x > rectTry.LeftBottom.x) && (rect.LeftBottom.x < rect.RightTop.x)) || ((rect.RightTop.x > rectTry.LeftBottom.x) && (rect.RightTop.x < rect.RightTop.x))) && (((rect.LeftBottom.y < rectTry.LeftBottom.y) && (rect.LeftBottom.y > rectTry.RightTop.y)) || ((rect.RightTop.y < rectTry.LeftBottom.y) && (rect.RightTop.y > rectTry.RightTop.y)))) {
             return true;
         }
     }
