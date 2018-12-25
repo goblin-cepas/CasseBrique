@@ -31,7 +31,9 @@ velocity Ball::getVelocity()const{return m_velocity;}
 int Ball::getResistance()const{return m_resistance;}
 
 bool Ball::collide(Ball &ball){
-  this->move(); bool haveCollided=false;
+  bool haveCollided=false;
+  
+  this->move(); 
   rectangle new_pattern=this->getBallPattern();
   velocity new_velocity=this->getVelocity();
   if((this->getBallPattern().LeftBottom.x==ball.getBallPattern().LeftBottom.x)
@@ -50,6 +52,7 @@ bool Ball::collide(Ball &ball){
       haveCollided=true;
     } 
   this->setBallPattern(new_pattern);
+
   return haveCollided;    
 }
 
@@ -77,24 +80,23 @@ bool Ball::collide(Brick &brick){
 }
 
 bool Ball::collide(Paddle &paddle){
-  this->move(); bool haveCollided=false;
+  bool haveCollided=false;
   rectangle new_pattern=this->getBallPattern();
+  this->move();
   velocity new_velocity=this->getVelocity();
-  if((this->getBallPattern().LeftBottom.x==paddle.getPaddlePattern().LeftBottom.x)
-     && (this->getBallPattern().LeftBottom.y==paddle.getPaddlePattern().LeftBottom.y)){
-    new_pattern.LeftBottom.x=(this->getBallPattern().RightTop.x);
-    new_pattern.LeftBottom.y=(this->getBallPattern().RightTop.y);
-    new_velocity.direction.x=-new_velocity.direction.x;
+  if((this->getBallPattern().LeftBottom.x>=paddle.getPaddlePattern().LeftBottom.x
+    && this->getBallPattern().LeftBottom.x<=paddle.getPaddlePattern().RightTop.x)
+     && (this->getBallPattern().LeftBottom.y>=paddle.getPaddlePattern().LeftBottom.y-1)){
+    new_pattern.LeftBottom.x=(this->getBallPattern().LeftBottom.x);
+    new_pattern.LeftBottom.y=(this->getBallPattern().LeftBottom.y);
+    new_pattern.RightTop.x=(this->getBallPattern().RightTop.x);
+    new_pattern.RightTop.y=(this->getBallPattern().RightTop.y);
+    if(new_velocity.direction.y=1){
+      new_velocity.direction.y=-new_velocity.direction.y;
+    }
     haveCollided=true;
   }
-  else
-    if((this->getBallPattern().RightTop.x==paddle.getPaddlePattern().RightTop.x)
-       && (this->getBallPattern().RightTop.y==paddle.getPaddlePattern().RightTop.y)){
-      new_pattern.RightTop.x=(this->getBallPattern().LeftBottom.x);
-      new_pattern.RightTop.y=(this->getBallPattern().LeftBottom.y);
-      new_velocity.direction.y=-new_velocity.direction.y;
-      haveCollided=true;
-    } 
+     
   this->setBallPattern(new_pattern);
   return haveCollided;    
 }
@@ -102,14 +104,27 @@ bool Ball::collide(Paddle &paddle){
 bool Ball::move(){
   rectangle new_pos;bool isMoving=false;
   new_pos=getBallPattern();
+
   if(getVelocity().direction.x!=0){
     new_pos.LeftBottom.x=(new_pos.LeftBottom.x*getVelocity().accel*getVelocity().direction.x);
+    new_pos.RightTop.x=((new_pos.RightTop.x*getVelocity().accel*getVelocity().direction.x));
     isMoving=true;
   }
+
   if(getVelocity().direction.y!=0){
     new_pos.RightTop.y=(new_pos.RightTop.y*getVelocity().accel*getVelocity().direction.y);
+    new_pos.LeftBottom.y=(new_pos.LeftBottom.y*getVelocity().accel*getVelocity().direction.y);
     isMoving=true;
   }
+
+  if(((new_pos.LeftBottom.x<0 || new_pos.LeftBottom.y)
+    || (new_pos.RightTop.x<0 || new_pos.RightTop.y))){
+      new_pos.LeftBottom.x=-new_pos.LeftBottom.x;
+      new_pos.RightTop.y=-new_pos.RightTop.y;
+      new_pos.RightTop.x=-new_pos.RightTop.x;
+      new_pos.LeftBottom.y=-new_pos.LeftBottom.y;
+  }
+  
   this->setBallPattern(new_pos);
   return isMoving;
 }

@@ -3,6 +3,7 @@
 
 #include "Level.h"
 #include "timer.h"
+#include "Save.h"
 
 class Game {
 public:
