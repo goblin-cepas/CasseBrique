@@ -1,9 +1,10 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-
 #include <iostream>
-#include <vector>
-
+extern "C" {
+#include <curses.h>
+}
+#include <iostream>
 #include "window.h"
 #include "Brick.h"
 #include "Ball.h"
@@ -11,6 +12,7 @@
 #include "Home.h"
 #include "Score.h"
 
+#include <vector>
 
 class Level {
 private:
@@ -23,7 +25,26 @@ private:
     int m_Score;
     int m_Hp;
     int m_Jump;
+    bool isCampaign;
 public:
+    ////////////////////////////////////////////////////////////
+    /// Input : none
+    ///
+    /// Result : Set the aforesaid boolean
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
+    void setIsCampaign(bool Boolean);
+    
+    ////////////////////////////////////////////////////////////
+    /// Input : none
+    ///
+    /// Result : Return the aforesaid boolean.
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
+    
+    bool getIsCampaign() const;
     //Builder/Destructor
     ////////////////////////////////////////////////////////////
     /// Input : none
@@ -33,6 +54,15 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
     Level();
+    //Builder/Destructor
+    ////////////////////////////////////////////////////////////
+    /// Input : level reference
+    ///
+    /// Result : constructor by copy
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
+    Level(const Level& L);
     //Accessors
     ////////////////////////////////////////////////////////////
     /// Input : all attribut of Level class
@@ -45,7 +75,7 @@ public:
     ////////////////////////////////////////////////////////////
     /// Input : none
     ///
-    /// Result : destruct this->level
+    /// Result : destruct level
     ///
     /// info :
     ////////////////////////////////////////////////////////////
@@ -110,7 +140,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    std::vector<Brick>&  getTabBrick() ;
+    const std::vector<Brick>& getTabBrick() const;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Brick>
     ///
@@ -127,7 +157,7 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
 
-    std::vector<Ball>& getTabBall() ;
+    const std::vector<Ball>& getTabBall() const;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<ball>
     ///
@@ -140,7 +170,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    std::vector<Paddle>& getTabPaddle() ;
+    const std::vector<Paddle>& getTabPaddle() const;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Paddle>
     ///
@@ -207,7 +237,16 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    std::vector<playerScore> createMenu();
+    void createMenu();
+    //Operator
+    ////////////////////////////////////////////////////////////
+    /// Input : const level reference
+    ///
+    /// Result : operator=
+    ///
+    /// info :
+    ////////////////////////////////////////////////////////////
+    Level &operator=(const Level& L);
 
 };
 

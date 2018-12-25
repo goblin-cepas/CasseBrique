@@ -1,4 +1,7 @@
 #include "Level.h"
+extern "C" {
+#include <curses.h>
+}
 #include <iostream>
 #include "window.h"
 #include "Brick.h"
@@ -14,8 +17,16 @@ m_NbBonus(NbBonus),m_gameWindowsSize(gameWindowsSize),m_MenuWindowsSize(menuWind
 }
 
 Level::Level(){}
+Level::Level(const Level& L) : m_NbBonus(L.m_NbBonus),m_gameWindowsSize(L.m_gameWindowsSize),m_MenuWindowsSize(L.m_MenuWindowsSize),m_TabBrick(L.m_TabBrick),m_TabBall(L.m_TabBall),m_TabPaddle(L.m_TabPaddle),m_Score(L.m_Score),m_Hp(L.m_Hp),m_Jump(L.m_Jump){}
 Level::~Level(){
 
+}
+bool Level::getIsCampaign() const{
+    return this->isCampaign;
+}
+
+void Level::setIsCampaign(bool Boolean){
+    this->isCampaign=Boolean;
 }
 
 size_t Level::getNbBonus() const{
@@ -42,22 +53,22 @@ void Level::setMenuWindowsSize(rectangle NewMenuWindowsSize){
     m_MenuWindowsSize = NewMenuWindowsSize;
 }
 
-std::vector<Brick>& Level::getTabBrick() {
-    return m_TabBrick;
+const std::vector<Brick>& Level::getTabBrick() const{
+    return this->m_TabBrick;
 }
 void Level::setTabBrick(std::vector<Brick> NewTabBrick){
      m_TabBrick = NewTabBrick;
 }
 
-std::vector<Ball>& Level::getTabBall() {
-    return m_TabBall;
+const std::vector<Ball>& Level::getTabBall() const{
+    return this->m_TabBall;
 }
 void Level::setTabBall(std::vector<Ball> NewTabBall){
     m_TabBall = NewTabBall;
 }
 
-std::vector<Paddle>& Level::getTabPaddle() {
-    return m_TabPaddle;
+const std::vector<Paddle>& Level::getTabPaddle() const{
+    return this->m_TabPaddle;
 }
 void Level::setTabPaddle(std::vector<Paddle> NewTabPaddle){
     m_TabPaddle = NewTabPaddle;
@@ -84,12 +95,29 @@ void Level::setJump(int NewJump){
     m_Jump = NewJump;
 }
     //method
-std::vector<playerScore> Level::createMenu(){
+void Level::createMenu(){
     Score MenuScore;
     std::vector<playerScore> test;
     test = MenuScore.getScoreTab();
     if (test.size() > 5){
         test.resize(5);
     }
-    return test;
+
 }
+    //operator
+    Level& Level::operator=(const Level& L){
+        if(this != &L){
+            m_NbBonus = L.m_NbBonus;
+            m_gameWindowsSize = L.m_gameWindowsSize;
+            m_MenuWindowsSize = L.m_MenuWindowsSize;
+            m_TabBrick = L.m_TabBrick;
+            m_TabBall = L.m_TabBall;
+            m_TabPaddle = L.m_TabPaddle;
+            m_Score = L.m_Score;
+            m_Hp = L.m_Hp;
+            m_Jump = L.m_Jump;
+        }
+        return *this;
+    }
+
+   
