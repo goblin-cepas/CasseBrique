@@ -255,7 +255,7 @@ void Configuration::addColor(std::string strColor) {
 bool Configuration::create() {
 
     int windowWidth = 60;
-    int windowHeight = 50;
+    int windowHeight = 30;
 
     srand(time(NULL));
     int loop = 0;
@@ -388,18 +388,18 @@ bool Configuration::create() {
 
         vector2 vect2Ball;
         vect2Ball.x = windowWidth / 2 + 1;
-        vect2Ball.y = 11 + windowHeight - 3;
+        vect2Ball.y = 11 + windowHeight - 2;
 
         rectangle rectBall;
         rectBall.LeftBottom = vect1Ball;
         rectBall.RightTop = vect2Ball;
 
         vector2 vectVeloc;
-        vectVeloc.x = 1;
+        vectVeloc.x = 0;
         vectVeloc.y = -1;
 
         velocity veloc;
-        veloc.accel = 10.f;
+        veloc.accel = 1.2;
         veloc.direction = vectVeloc;
 
         Ball ball(rectBall, ballColor, veloc, 400);
@@ -441,4 +441,3 @@ Level& Configuration::getLevel(int levelNumber) {
     levelNumber--;
     return this->m_levels[levelNumber];
 }
-

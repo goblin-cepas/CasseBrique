@@ -43,6 +43,7 @@ bool Game::getHelp()const{return m_help;}
 void Game::setLevel(Level& newLevel){m_level=newLevel;}
 void Game::setTimer(timer newTimer){m_timer=newTimer;}
 void Game::setPause(bool newPause){m_pause=newPause;}
+
 void Game::setHelp(bool newHelp){m_help=newHelp;}
 
 
@@ -58,13 +59,10 @@ bool Game::update(){
     // we update the state of each object on the board
     
     m_level.getTabPaddle()[0].move();
-
-    for(size_t i=0;i<m_level.getTabBall().size(); i++){
-      this->getLevel().getTabBall()[i].collide(&m_level.getTabPaddle()[0]);
-      for(size_t j =0;j<this->getLevel().getTabBrick().size();++j){
-        this->getLevel().getTabBall()[i].collide(&m_level.getTabBrick()[j]);
-      }
+    for(int i=0; i<this->getLevel().getTabBall().size();i++){
+      this->getLevel().getTabBall()[i].collide(this->getLevel().getTabPaddle()[0]);
     }
+    
     
     //Update of the timer
     time(&this->getTimer().end);
@@ -78,6 +76,8 @@ bool Game::update(){
 bool Game::quit(int key){
   if((key=getch())=='q'){    
     //Appeler Save
+    //Save save;
+   // save.writeSave(this->getLevel());
     //quitter la partie et revenir au menu
     this->~Game();
     return true;
@@ -94,39 +94,39 @@ bool Game::interrupt(int key){
     case 'p':
       {
 	Window pauseScreen(10,20,80,20,'+');
+  this->setPause(true);
 	do{
 	  pauseScreen.setCouleurBordure(BRED);
 	  pauseScreen.setCouleurFenetre(WBLACK);
 	  pauseScreen.print(7,3,"Paused");
-	  this->setPause(true);
-	  
 	}while((key=getch())!='p');
 	hasBeenInterrupted=true;
 	break;
       }
     case 'h':
       {
-	this->setPause(true);
-	this->setHelp(true);
-	Window helpScreen(20,45,2,15,'+');
-	Window pauseScreen(10,20,80,20,'+');
-	pauseScreen.setCouleurBordure(BRED);
-	pauseScreen.setCouleurFenetre(WBLACK);
-	pauseScreen.print(7,3,"Paused");
-	helpScreen.setCouleurBordure(BRED);
-	helpScreen.setCouleurFenetre(WBLACK);
-	helpScreen.print(1,1,"This is the help screen!",WBLUE);
-	helpScreen.print(1,4,"To move the paddle press '<-' or '->'");
-	helpScreen.print(1,7,"To launch the ball press the spacebar key");
-	helpScreen.print(1,10,"To resume the game press the 'h' key");
-	helpScreen.print(1,13,"To just pause the game press the 'p' key");
-	do{
-	}while((key=getch())!='h');
-	helpScreen.setCouleurBordure(WBLACK);
-	hasBeenInterrupted=true;
+	  this->setPause(true);
+    this->setHelp(true);
+    Window helpScreen(20,45,2,15,'+');
+    Window pauseScreen(10,20,80,20,'+');
+    pauseScreen.setCouleurBordure(BRED);
+    pauseScreen.setCouleurFenetre(WBLACK);
+    pauseScreen.print(7,3,"Paused");
+    helpScreen.setCouleurBordure(BRED);
+    helpScreen.setCouleurFenetre(WBLACK);
+    helpScreen.print(1,1,"This is the help screen!",WBLUE);
+    helpScreen.print(1,4,"To move the paddle press '<-' or '->'");
+    helpScreen.print(1,7,"To launch the ball press the spacebar key");
+    helpScreen.print(1,10,"To resume the game press the 'h' key");
+    helpScreen.print(1,13,"To just pause the game press the 'p' key");
+    do{
+      usleep(600);
+    }while((key=getch())!='h');
+    helpScreen.setCouleurBordure(WBLACK);
+    hasBeenInterrupted=true;
 	break;
       }
-      clear();
+    
     }
     
   }
@@ -160,6 +160,7 @@ void runGame(Game *testGame){
     menuScreen.print(1,1,"Press Space to launch the ball !");
     launched = testGame->launch(ch);
     /*------------------Display of the paddle--------------------------*/
+
     for(size_t x=0;x<w;++x){
       for (size_t y=0;y<h;++y){
 	if((x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
@@ -189,7 +190,7 @@ void runGame(Game *testGame){
   
   std::vector<playerScore> tabScore=testGame->getLevel().createMenu();
   short int tabI=0;short int cpt=0; int playerHp; int playerSc;
-  int timerSec; bool bUsed=false; int timerSec5; int tabB=0;
+  int timerSec; int timerSec5; int tabB=0;
   Color brickColor;
   do{	
     timerSec=testGame->getTimer().elapsed;
@@ -202,6 +203,7 @@ void runGame(Game *testGame){
     }
     
     /*------------------Score section of the menu------------------------*/
+
     menuScreen.print(32,1,"Highscores: ", WBLUE);
     
     if(tabI==0 ){
@@ -227,7 +229,6 @@ void runGame(Game *testGame){
     if(tabI==4){
       menuScreen.print(32,2,tabScore[tabI].pseudo);
       menuScreen.print(37,2,std::to_string(tabScore[tabI].score));
-      bUsed=true;
     }
     
     if(tabI>4){tabI=0;}  	  
@@ -237,13 +238,15 @@ void runGame(Game *testGame){
     }
     
     /*------------------End score section -----------------------------*/
-    /*------------------Player Stats section of the menu---------------*/
+    
+      /*------------------Player Stats section of the menu---------------*/
     
     menuScreen.print(1,1,"Current Score: "+std::to_string(playerSc));
     menuScreen.print(1,2,"Player life: "+std::to_string(playerHp));
     menuScreen.print(1,3,"Time: "+std::to_string(timerSec)+"/200");
     
     /*------------------End player stats section-----------------------*/
+   
     /*------------------Help section of the menu-----------------------*/
     
     menuScreen.print(60,1,"Press 'h' for help");
@@ -259,21 +262,23 @@ void runGame(Game *testGame){
     /*------------------Display of the paddle--------------------------*/
     for(size_t x=0;x<w;++x){
       for (size_t y=0;y<h;++y){
-	if((x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
-	   || (x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
+
+	     if((x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
+	       || (x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
 	  
-	  gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
+	       gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
 	  
-	  for(int i=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
-	      i>=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
-	    gameScreen.print(i,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ', WBLUE);
-	  }
-	}
+	         for(int i=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
+	            i>=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
+	             gameScreen.print(i,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ', WBLUE);
+	          }
+	     }
 	
 	/*------------------End of the paddle display---------------------*/
-	/*------------------Display of the bricks-------------------------*/
 	
-	if((x==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x
+  /*------------------Display of the bricks-------------------------*/
+	
+	else if((x==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x
 	    && y==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y)
 	   || ((x==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x)
                && y==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y)){
@@ -319,26 +324,45 @@ void runGame(Game *testGame){
 	  
 	  for(int i=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y;
 	      i<=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y; ++i){
-	    gameScreen.print(testGame->getLevel().getTabBrick()[tabB++].getBrickPattern().RightTop.x,i,' ',brickColor); 
+	    gameScreen.print(testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x,i,' ',brickColor); 
 	  }
 	  
-	  if(tabB>testGame->getLevel().getTabBrick().size()){tabB=0;}
+	  if(++tabB>=testGame->getLevel().getTabBrick().size()){tabB=0;}
 	}
 	
 	
 	/*------------------End display of the bricks--------------------*/
-	/*------------------Display of the balls-------------------------*/
 	
-	if((x==testGame->getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
+  /*------------------Display of the balls-------------------------*/
+	
+	else if((x==testGame->getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
 	    && y==testGame->getLevel().getTabBall()[0].getBallPattern().RightTop.y)){
 	  gameScreen.print(x,y,'@');
 	}
 	
 	/*------------------End display of balls------------------------*/
+  //if the current position is not near an object of the level display a black space
+  if((x<testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x
+    || x>testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)
+    && y==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y){
+    gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WBLACK);
   }
+  }
+
   }  
   /*------------------End display of the objects------------------*/
     testGame->update();
-    std::cout<<testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x<<std::endl;
+    std::cout<<testGame->getLevel().getTabBall()[0].getVelocity().accel<<std::endl;
+
   }while(testGame->getTimer().elapsed!=200 && testGame->quit(ch)==false);
+}
+
+int main(){
+  Configuration config;
+  config.Init();
+  Game testGame(config.getLevel(1));  
+  startProgramX();
+  runGame(&testGame);
+  stopProgramX();
+  return 0;
 }
