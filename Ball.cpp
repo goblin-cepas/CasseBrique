@@ -104,27 +104,46 @@ bool Ball::collide(Paddle &paddle){
 bool Ball::move(){
   rectangle new_pos;bool isMoving=false;
   new_pos=getBallPattern();
+  velocity new_direction=this->getVelocity();
 
   if(getVelocity().direction.x!=0){
-    new_pos.LeftBottom.x=(new_pos.LeftBottom.x*getVelocity().accel*getVelocity().direction.x);
-    new_pos.RightTop.x=((new_pos.RightTop.x*getVelocity().accel*getVelocity().direction.x));
+    if(getVelocity().direction.x==1){
+      new_pos.LeftBottom.x=(new_pos.LeftBottom.x*getVelocity().accel);
+      new_pos.RightTop.x=((new_pos.RightTop.x*getVelocity().accel));
+    }
+    else if(getVelocity().direction.x==-1){
+      new_pos.LeftBottom.x=(new_pos.LeftBottom.x*getVelocity().accel)-getBallPattern().LeftBottom.x;
+      new_pos.RightTop.x=(new_pos.RightTop.x*getVelocity().accel)-getBallPattern().RightTop.x;
+    }
     isMoving=true;
   }
 
   if(getVelocity().direction.y!=0){
-    new_pos.RightTop.y=(new_pos.RightTop.y*getVelocity().accel*getVelocity().direction.y);
-    new_pos.LeftBottom.y=(new_pos.LeftBottom.y*getVelocity().accel*getVelocity().direction.y);
+    if(getVelocity().direction.y==1){
+      new_pos.RightTop.y=(new_pos.RightTop.y*getVelocity().accel);
+      new_pos.LeftBottom.y=(new_pos.LeftBottom.y*getVelocity().accel);
+    }
+    else if(getVelocity().direction.y==-1){
+      new_pos.LeftBottom.y=((new_pos.LeftBottom.y*getVelocity().accel))-getBallPattern().LeftBottom.y;
+      new_pos.RightTop.y=((new_pos.RightTop.y*getVelocity().accel))-getBallPattern().RightTop.y;
+    }
     isMoving=true;
   }
 
-  if(((new_pos.LeftBottom.x<0 || new_pos.LeftBottom.y)
-    || (new_pos.RightTop.x<0 || new_pos.RightTop.y))){
-      new_pos.LeftBottom.x=-new_pos.LeftBottom.x;
-      new_pos.RightTop.y=-new_pos.RightTop.y;
-      new_pos.RightTop.x=-new_pos.RightTop.x;
-      new_pos.LeftBottom.y=-new_pos.LeftBottom.y;
+  if(new_pos.LeftBottom.x<=0 || new_pos.RightTop.x<=0){
+    new_direction.direction.x=1;
+  }
+  if(new_pos.LeftBottom.y<=0 || new_pos.RightTop.y<=0){
+   new_direction.direction.y=1; 
+  }
+  if(new_pos.LeftBottom.y<45 || new_pos.RightTop.x<45){
+    new_direction.direction.y=-1;
+  }
+  if(new_pos.LeftBottom.x<59 || new_pos.RightTop.x<59){
+    new_direction.direction.x=-1;
   }
   
   this->setBallPattern(new_pos);
+  this->setVelocity(new_direction);
   return isMoving;
 }

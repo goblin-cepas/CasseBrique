@@ -130,5 +130,7 @@ private:
 
 };
 
+void runGame(Game&);
+
 #endif /* GAME_H */
 

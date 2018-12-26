@@ -1,10 +1,9 @@
 #ifndef LEVEL_H
 #define LEVEL_H
+
 #include <iostream>
-extern "C" {
-#include <curses.h>
-}
-#include <iostream>
+#include <vector>
+
 #include "window.h"
 #include "Brick.h"
 #include "Ball.h"
@@ -12,7 +11,7 @@ extern "C" {
 #include "Home.h"
 #include "Score.h"
 
-#include <vector>
+
 
 class Level {
 private:
@@ -140,7 +139,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    const std::vector<Brick>& getTabBrick() const;
+    std::vector<Brick>& getTabBrick() ;
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Brick>
     ///
@@ -148,7 +147,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    void setTabBrick(std::vector<Brick>);
+    void setTabBrick(std::vector<Brick>&);
     ////////////////////////////////////////////////////////////
     /// Input : none
     ///
@@ -157,20 +156,20 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
 
-    const std::vector<Ball>& getTabBall() const;
+    std::vector<Ball>& getTabBall();
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<ball>
     ///
     /// Result : change m_TabBall
 
-    void setTabBall(std::vector<Ball>);
+    void setTabBall(std::vector<Ball>&);
     /// Input : none
     ///
     /// Result : return m_TabPaddle
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    const std::vector<Paddle>& getTabPaddle() const;
+    std::vector<Paddle>& getTabPaddle();
     ////////////////////////////////////////////////////////////
     /// Input : std::vector<Paddle>
     ///
@@ -178,7 +177,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    void setTabPaddle(std::vector<Paddle>);
+    void setTabPaddle(std::vector<Paddle>&);
     ////////////////////////////////////////////////////////////
     /// Input : none
     ///
@@ -237,7 +236,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    void createMenu();
+    std::vector<playerScore> createMenu();
     //Operator
     ////////////////////////////////////////////////////////////
     /// Input : const level reference

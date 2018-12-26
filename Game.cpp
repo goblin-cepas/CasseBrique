@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "window.h"
 #include "Configuration.h"
+#include "Log.h"
 
 #include <unistd.h>
 #include <string.h>
@@ -59,10 +60,8 @@ bool Game::update(){
     // we update the state of each object on the board
     
     m_level.getTabPaddle()[0].move();
-    for(int i=0; i<this->getLevel().getTabBall().size();i++){
-      this->getLevel().getTabBall()[i].collide(this->getLevel().getTabPaddle()[0]);
-    }
-    
+    std::cout<<m_level.getTabBall()[0].getVelocity().direction.y<<std::endl;
+    m_level.getTabBall()[0].move();
     
     //Update of the timer
     time(&this->getTimer().end);
@@ -74,11 +73,10 @@ bool Game::update(){
 }
 
 bool Game::quit(int key){
-  if((key=getch())=='q'){    
-    //Appeler Save
-    //Save save;
-   // save.writeSave(this->getLevel());
-    //quitter la partie et revenir au menu
+  if((key=getch())=='q'){     
+    Save save;
+    save.writeSave(this->m_level);
+
     this->~Game();
     return true;
   }
@@ -144,43 +142,75 @@ bool Game::launch(int key){
   }
 }
 
-void runGame(Game *testGame){
+/*bool coordFree(int x, int y, Level &currLevel){
+  bool isFreeCoord=false;
+  if(((x!=currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.x 
+    || x!=currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.x) 
+    && (y!=currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y 
+      || y!=currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.y)) 
+    && ((x<currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
+      ||(x>currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.x)
+      && (y>currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y)
+      ||y<currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y))
+  {
+    //if !Brick
+
+    //if!Ball
+    isFreeCoord=true;
+  }
+  return isFreeCoord;
+}*/
+
+void runGame(Game &testGame){
   int ch;
   int h=45,w=60;
   
-  
-  std::cout<<testGame->getTimer().elapsed<<std::endl; 
-  
   Window menuScreen(5,80,50,1,'+');
   Window gameScreen(h,w,59,10,'+');	
+
   bool launched=false;
+  
+  velocity veloc;
+  vector2 vectVeloc;
+  vectVeloc.x = 0;
+  vectVeloc.y = 1;
+  veloc.accel = 1.5f;
+  veloc.direction = vectVeloc;
+  
+  testGame.getLevel().getTabBall()[0].setVelocity(veloc);
+  
   do{
+
+    testGame.getLevel().getTabBall()[0].setVelocity(veloc); 
     menuScreen.setCouleurBordure(BRED);
     menuScreen.setCouleurFenetre(WBLACK);
     menuScreen.print(1,1,"Press Space to launch the ball !");
-    launched = testGame->launch(ch);
+    launched = testGame.launch(ch);
     /*------------------Display of the paddle--------------------------*/
 
     for(size_t x=0;x<w;++x){
       for (size_t y=0;y<h;++y){
-	if((x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
-	   || (x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
+	if((x==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
+	   || (x==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
 	  
-	  gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
+	  gameScreen.print(x,testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
 	  
-	  for(int i=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
-	      i>=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
-	    gameScreen.print(i,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ', WBLUE);
+	  for(int i=testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
+	      i>=testGame.getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
+	    gameScreen.print(i,testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ', WBLUE);
 	  }
 	}
 	/*------------------End of the paddle display----------------------*/
 	
 	/*------------------Display of the ball----------------------------*/
 	
-	if((x==testGame->getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
-	    && y==testGame->getLevel().getTabBall()[0].getBallPattern().RightTop.y)){
-	  gameScreen.print(x,y,'@');
-	}
+	else if((x==testGame.getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
+      && y==testGame.getLevel().getTabBall()[0].getBallPattern().LeftBottom.y)
+     || ((x==testGame.getLevel().getTabBall()[0].getBallPattern().RightTop.x)
+               && y==testGame.getLevel().getTabBall()[0].getBallPattern().RightTop.y))
+      {
+    gameScreen.print(x,y,'@');
+  }
 	
 	/*------------------End display of the ball--------------------------*/
       }
@@ -188,14 +218,15 @@ void runGame(Game *testGame){
     usleep(600);
   }while(launched==false);
   
-  std::vector<playerScore> tabScore=testGame->getLevel().createMenu();
+  std::vector<playerScore> tabScore=testGame.getLevel().createMenu();
   short int tabI=0;short int cpt=0; int playerHp; int playerSc;
   int timerSec; int timerSec5; int tabB=0;
   Color brickColor;
-  do{	
-    timerSec=testGame->getTimer().elapsed;
-    playerHp=testGame->getLevel().getHp();
-    playerSc=testGame->getLevel().getScore();
+  do{
+
+    timerSec=testGame.getTimer().elapsed;
+    playerHp=testGame.getLevel().getHp();
+    playerSc=testGame.getLevel().getScore();
     if(timerSec%5==0){
       timerSec5=timerSec;
       menuScreen.clear();
@@ -239,7 +270,7 @@ void runGame(Game *testGame){
     
     /*------------------End score section -----------------------------*/
     
-      /*------------------Player Stats section of the menu---------------*/
+    /*------------------Player Stats section of the menu---------------*/
     
     menuScreen.print(1,1,"Current Score: "+std::to_string(playerSc));
     menuScreen.print(1,2,"Player life: "+std::to_string(playerHp));
@@ -263,14 +294,14 @@ void runGame(Game *testGame){
     for(size_t x=0;x<w;++x){
       for (size_t y=0;y<h;++y){
 
-	     if((x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
-	       || (x==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
+	     if((x==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
+	       || (x==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)){
 	  
-	       gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
+	       gameScreen.print(x,testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WGREEN);
 	  
-	         for(int i=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
-	            i>=testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
-	             gameScreen.print(i,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ', WBLUE);
+	         for(int i=testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x-1;
+	            i>=testGame.getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x+1; --i){
+	             gameScreen.print(i,testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',testGame.getLevel().getTabPaddle()[0].getPaddleColor());
 	          }
 	     }
 	
@@ -278,56 +309,56 @@ void runGame(Game *testGame){
 	
   /*------------------Display of the bricks-------------------------*/
 	
-	else if((x==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x
-	    && y==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y)
-	   || ((x==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x)
-               && y==testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y)){
-	  if(testGame->getLevel().getTabBrick()[tabB].getBrickResistance()==1){
+	else if((x==testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x
+	    && y==testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y)
+	   || ((x==testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x)
+               && y==testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y)){
+	  if(testGame.getLevel().getTabBrick()[tabB].getBrickResistance()==1){
 	    gameScreen.print(x,y,' ',WCYAN);
 	    brickColor=WCYAN;
 	  }
 	  
-	  if(testGame->getLevel().getTabBrick()[tabB].getBrickResistance()==2){
+	  if(testGame.getLevel().getTabBrick()[tabB].getBrickResistance()==2){
 	    gameScreen.print(x,y,' ',WBLUE);
 	    brickColor=WBLUE;
 	  }
 	  
-	  if(testGame->getLevel().getTabBrick()[tabB].getBrickResistance()==3){
+	  if(testGame.getLevel().getTabBrick()[tabB].getBrickResistance()==3){
 	    gameScreen.print(x,y,' ',WYELLOW);
 	    brickColor=WYELLOW;
 	  }
 	  
-	  if(testGame->getLevel().getTabBrick()[tabB].getBrickResistance()==4){
+	  if(testGame.getLevel().getTabBrick()[tabB].getBrickResistance()==4){
 	    gameScreen.print(x,y,' ',WGREEN);
 	    brickColor=WGREEN;
 	  }
 	  
-	  if(testGame->getLevel().getTabBrick()[tabB].getBrickResistance()==5){
+	  if(testGame.getLevel().getTabBrick()[tabB].getBrickResistance()==5){
 	    gameScreen.print(x,y,' ',WRED);
 	    brickColor=WRED;
 	  }
 	  
-	  for(int i=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x;
-	      i>=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x; --i ){
-	    gameScreen.print(i,testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y,' ',brickColor);
+	  for(int i=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x;
+	      i>=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x; --i ){
+	    gameScreen.print(i,testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y,' ',brickColor);
 	  }
 	  
-	  for(int i=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x;
-	      i<=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x; ++i ){
-	    gameScreen.print(i,testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y,' ',brickColor);
+	  for(int i=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x;
+	      i<=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x; ++i ){
+	    gameScreen.print(i,testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y,' ',brickColor);
 	  }
 	  
-	  for(int i=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y;
-	      i>=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y; --i){
-	    gameScreen.print(testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x,i,' ',brickColor); 
+	  for(int i=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y;
+	      i>=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y; --i){
+	    gameScreen.print(testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.x,i,' ',brickColor); 
 	  }
 	  
-	  for(int i=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y;
-	      i<=testGame->getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y; ++i){
-	    gameScreen.print(testGame->getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x,i,' ',brickColor); 
+	  for(int i=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.y;
+	      i<=testGame.getLevel().getTabBrick()[tabB].getBrickPattern().LeftBottom.y; ++i){
+	    gameScreen.print(testGame.getLevel().getTabBrick()[tabB].getBrickPattern().RightTop.x,i,' ',brickColor); 
 	  }
 	  
-	  if(++tabB>=testGame->getLevel().getTabBrick().size()){tabB=0;}
+	  if(++tabB>=testGame.getLevel().getTabBrick().size()){tabB=0;}
 	}
 	
 	
@@ -335,26 +366,27 @@ void runGame(Game *testGame){
 	
   /*------------------Display of the balls-------------------------*/
 	
-	else if((x==testGame->getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
-	    && y==testGame->getLevel().getTabBall()[0].getBallPattern().RightTop.y)){
+	else if((x==testGame.getLevel().getTabBall()[0].getBallPattern().LeftBottom.x
+      && y==testGame.getLevel().getTabBall()[0].getBallPattern().LeftBottom.y)
+     || ((x==testGame.getLevel().getTabBall()[0].getBallPattern().RightTop.x)
+               && y==testGame.getLevel().getTabBall()[0].getBallPattern().RightTop.y))
+      {
 	  gameScreen.print(x,y,'@');
 	}
 	
 	/*------------------End display of balls------------------------*/
   //if the current position is not near an object of the level display a black space
-  if((x<testGame->getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x
-    || x>testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)
-    && y==testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y){
-    gameScreen.print(x,testGame->getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WBLACK);
-  }
+  else if((x<testGame.getLevel().getTabPaddle()[0].getPaddlePattern().LeftBottom.x
+    || x>testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.x)
+    && y==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y){
+    gameScreen.print(x,testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y,' ',WBLACK);
   }
 
+  }
   }  
   /*------------------End display of the objects------------------*/
-    testGame->update();
-    std::cout<<testGame->getLevel().getTabBall()[0].getVelocity().accel<<std::endl;
-
-  }while(testGame->getTimer().elapsed!=200 && testGame->quit(ch)==false);
+    testGame.update();
+  }while(testGame.getTimer().elapsed!=200 && testGame.quit(ch)==false);
 }
 
 int main(){
@@ -362,7 +394,7 @@ int main(){
   config.Init();
   Game testGame(config.getLevel(1));  
   startProgramX();
-  runGame(&testGame);
+  runGame(testGame);
   stopProgramX();
   return 0;
 }
