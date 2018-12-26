@@ -4,9 +4,7 @@
 #include "Bonus.h"
 #include "window.h"
 #include "Rectangle.h"
-extern "C" {
-#include <curses.h>
-}
+
 
 class Paddle {
   private:
@@ -16,6 +14,7 @@ class Paddle {
   public:
     //Builder/Destructor
     Paddle(rectangle,Color,int);
+    Paddle();
     ~Paddle();
 
   //Accessors
@@ -61,6 +60,7 @@ class Paddle {
   /// info :
   ////////////////////////////////////////////////////////////
   int getPaddleResistance() const;
+
   ////////////////////////////////////////////////////////////
   /// Input : int
   ///
@@ -69,6 +69,7 @@ class Paddle {
   /// info :
   ////////////////////////////////////////////////////////////
   void setPaddleResistance(int);
+
   ////////////////////////////////////////////////////////////
   /// Input : Bonus
   ///
@@ -76,8 +77,8 @@ class Paddle {
   ///
   /// info :
   ////////////////////////////////////////////////////////////
- bool setPaddleBonus(Bonus);
- //void setPaddleBonus(Bonus);
+  bool setPaddleBonus(Bonus);
+ 
 
   //Method
   ////////////////////////////////////////////////////////////

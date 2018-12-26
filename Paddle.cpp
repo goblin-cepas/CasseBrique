@@ -1,13 +1,12 @@
 #include "Paddle.h"
-extern "C" {
-#include <curses.h>
-}
 #include "window.h"
-#include <iostream>
 #include "Bonus.h"
 
+#include <iostream>
 
 //Builder
+
+Paddle::Paddle(){}
 
 Paddle::Paddle(rectangle NewRectangle, Color NewColor, int NewResistance) : m_paddlePattern(NewRectangle), m_paddleColor(NewColor), m_paddleResistance(NewResistance){
 }
@@ -48,17 +47,21 @@ bool Paddle::move(){
         case KEY_LEFT:
     newPattern.LeftBottom.x--;
     newPattern.RightTop.x--;
-    setPaddlePattern(newPattern);
+    if(newPattern.LeftBottom.x>=0){
+      setPaddlePattern(newPattern);
+    }
     move=true;
     break;
 
         case KEY_RIGHT:
     newPattern.LeftBottom.x++;
     newPattern.RightTop.x++;
-    setPaddlePattern(newPattern);
+    if(newPattern.RightTop.x<=59){
+      setPaddlePattern(newPattern);
+    }
     move=true;
     break;
-        }
+    }
       return move;
 }
 

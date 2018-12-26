@@ -399,7 +399,8 @@ bool Configuration::create() {
         vectVeloc.y = -1;
 
         velocity veloc;
-        veloc.accel = 1.2;
+        
+        veloc.accel = 1.2f ;
         veloc.direction = vectVeloc;
 
         Ball ball(rectBall, ballColor, veloc, 400);
