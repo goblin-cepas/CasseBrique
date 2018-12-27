@@ -9,13 +9,13 @@
 #include <iostream>
 
 
-Level::Level(size_t NbBonus,rectangle gameWindowsSize,rectangle menuWindowSize,std::vector<Brick> TabBrick,std::vector<Ball> TabBall,std::vector<Paddle> TabPaddle,int Score,int Hp,int Jump) :
-m_NbBonus(NbBonus),m_gameWindowsSize(gameWindowsSize),m_MenuWindowsSize(menuWindowSize),m_TabBrick(TabBrick),m_TabBall(TabBall),m_TabPaddle(TabPaddle),m_Score(Score),m_Hp(Hp),m_Jump(Jump){
+Level::Level(size_t NbBonus,std::vector<Brick> TabBrick,std::vector<Ball> TabBall,std::vector<Paddle> TabPaddle,int Score,int Hp,int Jump) :
+m_NbBonus(NbBonus),m_TabBrick(TabBrick),m_TabBall(TabBall),m_TabPaddle(TabPaddle),m_Score(Score),m_Hp(Hp),m_Jump(Jump){
 
 }
 
 Level::Level(){}
-Level::Level(const Level& L) : m_NbBonus(L.m_NbBonus),m_gameWindowsSize(L.m_gameWindowsSize),m_MenuWindowsSize(L.m_MenuWindowsSize),m_TabBrick(L.m_TabBrick),m_TabBall(L.m_TabBall),m_TabPaddle(L.m_TabPaddle),m_Score(L.m_Score),m_Hp(L.m_Hp),m_Jump(L.m_Jump){}
+Level::Level(const Level& L) : m_NbBonus(L.m_NbBonus),m_TabBrick(L.m_TabBrick),m_TabBall(L.m_TabBall),m_TabPaddle(L.m_TabPaddle),m_Score(L.m_Score),m_Hp(L.m_Hp),m_Jump(L.m_Jump){}
 Level::~Level(){
 
 }
@@ -33,24 +33,6 @@ size_t Level::getNbBonus() const{
 void Level::setNbBonus(size_t NewNbBonus){
     m_NbBonus = NewNbBonus;
 }
-
-rectangle Level::getGameWindowsSize() const{
-    return m_gameWindowsSize;
-}
-
-void Level::setGameWindowsSize(rectangle NewGameWindowsSize){
-    m_gameWindowsSize = NewGameWindowsSize;
-}
-
-
-rectangle Level::getMenuWindowsSize() const{
-    return m_MenuWindowsSize;
-}
-
-void Level::setMenuWindowsSize(rectangle NewMenuWindowsSize){
-    m_MenuWindowsSize = NewMenuWindowsSize;
-}
-
 std::vector<Brick>& Level::getTabBrick(){
     return this->m_TabBrick;
 }
@@ -106,8 +88,6 @@ std::vector<playerScore> Level::createMenu(){
 Level& Level::operator=(const Level& L){
     if(this != &L){
         m_NbBonus = L.m_NbBonus;
-        m_gameWindowsSize = L.m_gameWindowsSize;
-        m_MenuWindowsSize = L.m_MenuWindowsSize;
         m_TabBrick = L.m_TabBrick;
         m_TabBall = L.m_TabBall;
         m_TabPaddle = L.m_TabPaddle;
@@ -117,5 +97,3 @@ Level& Level::operator=(const Level& L){
     }
     return *this;
 }
-
-   

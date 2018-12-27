@@ -399,7 +399,7 @@ bool Configuration::create() {
         vectVeloc.y = -1;
 
         velocity veloc;
-        
+
         veloc.accel = 1.2f ;
         veloc.direction = vectVeloc;
 
@@ -410,7 +410,7 @@ bool Configuration::create() {
             rectangle recti = this->m_brickLevel[k].getBrickPattern();
         }
 
-        Level level(0, rectLevel, restMenu, this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump);
+        Level level(0, this->m_brickLevel, this->m_ballLevel, this->m_paddleLevel, this->m_scoreHit, this->m_playerLife, this->m_playerJump);
         this->m_levels.push_back(level);
         this->m_brickLevel.clear();
         i++;

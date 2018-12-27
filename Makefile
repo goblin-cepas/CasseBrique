@@ -1,5 +1,5 @@
 CXX=g++
-CXX_FLAGS=-g -O0 -ansi -pedantic -Wall
+CXX_FLAGS=-g -O0 -ansi -std=c++11 -pedantic -Wall
 LD_FLAGS =
 
 PROGS= CasseBrique
@@ -24,7 +24,7 @@ include $(DEPFILE)
 .SUFFIXES: .cpp .h .o
 
 $(PROGS): $(SOURCES:.cpp=.o)
-	$(CXX) $(LD_FLAGS) $^ -o $@
+	$(CXX) $(LD_FLAGS) $^ -o $@ -lncurses
 
 .cpp.o:
 	$(CXX) $(CXX_FLAGS) $< -c
