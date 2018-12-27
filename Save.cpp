@@ -96,16 +96,6 @@ void Save::writeSave(Level& level) {
         this->writeLine("#------------");
         this->writePaddles(level.getTabPaddle());
         this->writeLine("#------------");
-        this->writeLine("[GameWindow]");
-        ws = level.getGameWindowsSize();
-        (*this->of) << ws.LeftBottom.x << ";" << ws.LeftBottom.y << ";" << ws.RightTop.x << ";" << ws.RightTop.y << std::endl;
-        this->writeLine("[EndGameWindow]");
-        this->writeLine("#------------");
-        this->writeLine("[MenuWindow]");
-        ws = level.getMenuWindowsSize();
-        (*this->of) << ws.LeftBottom.x << ";" << ws.LeftBottom.y << ";" << ws.RightTop.x << ";" << ws.RightTop.y << std::endl;
-        this->writeLine("[EndMenuWindow]");
-        this->writeLine("#------------");
         this->writeBalls(level.getTabBall());
         this->writeLine("#------------");
         this->writeLine("[Score]");
@@ -188,70 +178,6 @@ void Save::readPaddle() {
     }
 
     this->loadedGame->setTabPaddle(paddles);
-}
-
-void Save::readGameWindow() {
-    std::string line = "";
-    std::getline(*(this->ifile), line);
-    std::string word;
-    std::istringstream stream(line);
-    unsigned int counter = 0;
-    vector2 lb, rt;
-    rectangle rect;
-    while (std::getline(stream, word, ';')) {
-
-        switch (counter) {
-            case 0:
-                lb.x = std::atoi(word.c_str());
-                break;
-            case 1:
-                lb.y = std::atoi(word.c_str());
-                break;
-            case 2:
-                rt.x = std::atoi(word.c_str());
-                break;
-            case 3:
-                rt.y = std::atoi(word.c_str());
-                rect.LeftBottom = lb;
-                rect.RightTop = rt;
-                break;
-        }
-        ++counter;
-    }
-    this->loadedGame->setGameWindowsSize(rect);
-
-}
-
-void Save::readMenuWindow() {
-    std::string line = "";
-    std::getline(*(this->ifile), line);
-    std::string word;
-    std::istringstream stream(line);
-    unsigned int counter = 0;
-    vector2 lb, rt;
-    rectangle rect;
-    while (std::getline(stream, word, ';')) {
-
-        switch (counter) {
-            case 0:
-                lb.x = std::atoi(word.c_str());
-                break;
-            case 1:
-                lb.y = std::atoi(word.c_str());
-                break;
-            case 2:
-                rt.x = std::atoi(word.c_str());
-                break;
-            case 3:
-                rt.y = std::atoi(word.c_str());
-                rect.LeftBottom = lb;
-                rect.RightTop = rt;
-                break;
-        }
-        ++counter;
-    }
-    this->loadedGame->setMenuWindowsSize(rect);
-
 }
 
 void Save::readBalls() {
@@ -432,10 +358,6 @@ void Save::loadSave(std::string file) {
                 this->readBonus();
             } else if (line == "[Paddle]") {
                 this->readPaddle();
-            } else if (line == "[GameWindow]") {
-                this->readGameWindow();
-            } else if (line == "[MenuWindow]") {
-                this->readMenuWindow();
             } else if (line == "[BeginBalls]") {
                 this->readBalls();
             } else if (line == "[Score]") {
@@ -467,4 +389,3 @@ Save::~Save() {
         delete this->loadedGame;
     }
 }
-

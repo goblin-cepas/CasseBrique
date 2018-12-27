@@ -16,8 +16,6 @@
 class Level {
 private:
     size_t m_NbBonus;
-    rectangle m_gameWindowsSize;
-    rectangle m_MenuWindowsSize;
     std::vector<Brick> m_TabBrick;
     std::vector<Ball> m_TabBall;
     std::vector<Paddle> m_TabPaddle;
@@ -34,7 +32,7 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
     void setIsCampaign(bool Boolean);
-    
+
     ////////////////////////////////////////////////////////////
     /// Input : none
     ///
@@ -42,7 +40,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    
+
     bool getIsCampaign() const;
     //Builder/Destructor
     ////////////////////////////////////////////////////////////
@@ -70,7 +68,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    Level(size_t NbBonus,rectangle gameWindowsSize,rectangle menuWindowSize,std::vector<Brick> TabBrick,std::vector<Ball> TabBall,std::vector<Paddle> TabPaddle,int Score,int Hp,int Jump);
+    Level(size_t NbBonus,std::vector<Brick> TabBrick,std::vector<Ball> TabBall,std::vector<Paddle> TabPaddle,int Score,int Hp,int Jump);
     ////////////////////////////////////////////////////////////
     /// Input : none
     ///
@@ -96,41 +94,6 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
     void setNbBonus(size_t);
-
-    ////////////////////////////////////////////////////////////
-    /// Input : none
-    ///
-    /// Result : return m_gameWindowsSize
-    ///
-    /// info :
-    ////////////////////////////////////////////////////////////
-    rectangle getGameWindowsSize() const;
-    ////////////////////////////////////////////////////////////
-    /// Input : rectangle
-    ///
-    /// Result : change m_gameWindowsSize
-    ///
-    /// info :
-    ////////////////////////////////////////////////////////////
-    void setGameWindowsSize(rectangle);
-
-    ////////////////////////////////////////////////////////////
-    /// Input : none
-    ///
-    /// Result : return m_MenuWindowsSize
-    ///
-    /// info :
-    ////////////////////////////////////////////////////////////
-    rectangle getMenuWindowsSize() const;
-
-    ////////////////////////////////////////////////////////////
-    /// Input : rectangle
-    ///
-    /// Result : change m_MenuWindowsSize
-    ///
-    /// info :
-    ////////////////////////////////////////////////////////////
-    void setMenuWindowsSize(rectangle);
 
     ////////////////////////////////////////////////////////////
     /// Input : none
