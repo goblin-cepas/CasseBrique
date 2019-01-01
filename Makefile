@@ -24,13 +24,13 @@ include $(DEPFILE)
 .SUFFIXES: .cpp .h .o
 
 $(PROGS): $(SOURCES:.cpp=.o)
-	$(CXX) $(LD_FLAGS) $^ -o $@ -lncurses
+	$(CXX) $(LD_FLAGS) $^ -o $@ -lncurses -std=c++11
 
 .cpp.o:
 	$(CXX) $(CXX_FLAGS) $< -c
 
 $(DEPFILE): $(SOURCES)
-	$(CXX) -MM $^ > $@
+	$(CXX) -MM $^ > $@ -std=c++11
 
 clean:
 	rm -f *~ $(SOURCES:.cpp=.o) $(PROGS)

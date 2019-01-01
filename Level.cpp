@@ -17,7 +17,7 @@ m_NbBonus(NbBonus),m_TabBrick(TabBrick),m_TabBall(TabBall),m_TabPaddle(TabPaddle
 Level::Level(){}
 Level::Level(const Level& L) : m_NbBonus(L.m_NbBonus),m_TabBrick(L.m_TabBrick),m_TabBall(L.m_TabBall),m_TabPaddle(L.m_TabPaddle),m_Score(L.m_Score),m_Hp(L.m_Hp),m_Jump(L.m_Jump){}
 Level::~Level(){
-
+    
 }
 bool Level::getIsCampaign() const{
     return this->isCampaign;
