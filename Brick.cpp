@@ -47,9 +47,9 @@ void Brick::setBrickResistance(int NewBrickResistance){
 
 //Method
 
-void Brick::hit(Brick &B){
+void Brick::hit(){
   if (m_brickResistance == 0){
-    delete &B;
+    this->~Brick();
   }
   else {
     m_brickResistance--;

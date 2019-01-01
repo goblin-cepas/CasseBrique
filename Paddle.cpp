@@ -45,12 +45,12 @@ bool Paddle::move(){
     switch (ch=getch()) {
 
         case KEY_LEFT:
-    newPattern.LeftBottom.x--;
-    newPattern.RightTop.x--;
-    if(newPattern.LeftBottom.x>=0){
-      setPaddlePattern(newPattern);
-    }
-    move=true;
+      newPattern.LeftBottom.x--;
+      newPattern.RightTop.x--;
+      if(newPattern.LeftBottom.x>=0){
+        setPaddlePattern(newPattern);
+      }
+      move=true;
     break;
 
         case KEY_RIGHT:
@@ -62,7 +62,7 @@ bool Paddle::move(){
     move=true;
     break;
     }
-      return move;
+  return move;
 }
 
 void Paddle::bonus(Bonus &B){

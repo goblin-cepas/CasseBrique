@@ -255,7 +255,7 @@ void Configuration::addColor(std::string strColor) {
 bool Configuration::create() {
 
     int windowWidth = 60;
-    int windowHeight = 30;
+    int windowHeight = 20;
 
     srand(time(NULL));
     int loop = 0;

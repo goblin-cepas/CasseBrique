@@ -86,17 +86,19 @@ bool Ball::collide(Paddle &paddle){
   velocity new_velocity=this->getVelocity();
   if((this->getBallPattern().LeftBottom.x>=paddle.getPaddlePattern().LeftBottom.x
     && this->getBallPattern().LeftBottom.x<=paddle.getPaddlePattern().RightTop.x)
-     && (this->getBallPattern().LeftBottom.y>=paddle.getPaddlePattern().LeftBottom.y-1)){
+     && ((this->getBallPattern().LeftBottom.y>=paddle.getPaddlePattern().LeftBottom.y-1)
+      || (this->getBallPattern().RightTop.y>=paddle.getPaddlePattern().LeftBottom.y-1))){
+
     new_pattern.LeftBottom.x=(this->getBallPattern().LeftBottom.x);
     new_pattern.LeftBottom.y=(this->getBallPattern().LeftBottom.y);
     new_pattern.RightTop.x=(this->getBallPattern().RightTop.x);
     new_pattern.RightTop.y=(this->getBallPattern().RightTop.y);
-    if(new_velocity.direction.y=1){
-      new_velocity.direction.y=-new_velocity.direction.y;
-    }
+
+    new_velocity.direction.y=-new_velocity.direction.y;
+  
     haveCollided=true;
   }
-     
+  this->setVelocity(new_velocity);   
   this->setBallPattern(new_pattern);
   return haveCollided;    
 }
@@ -136,7 +138,7 @@ bool Ball::move(){
   if(new_pos.LeftBottom.y<=0 || new_pos.RightTop.y<=0){
    new_direction.direction.y=1; 
   }
-  if(new_pos.LeftBottom.y<45 || new_pos.RightTop.x<45){
+  if(new_pos.LeftBottom.y<35 || new_pos.RightTop.y<35){
     new_direction.direction.y=-1;
   }
   if(new_pos.LeftBottom.x<59 || new_pos.RightTop.x<59){

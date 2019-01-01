@@ -99,13 +99,13 @@ class Brick{
 
     //Method
     ////////////////////////////////////////////////////////////
-    /// Input : Brick reference
+    /// Input : None
     ///
     /// Result : test if m_brickResistance is 0, if is 0 delete the brick, else  m_brickResistance reduced by 1
     ///
     /// info : 
     ////////////////////////////////////////////////////////////
-    void hit(Brick&);
+    void hit();
 
 
 

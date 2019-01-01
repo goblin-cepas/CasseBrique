@@ -9,7 +9,6 @@ class Game {
 public:
     Game();
     Game(Level);
-    Game(const Game& orig);
     virtual ~Game();
     
     ////////////////////////////////////////////////////////////
@@ -19,7 +18,7 @@ public:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    Level getLevel()const;
+    Level& getLevel()   ;
     
     ////////////////////////////////////////////////////////////
     /// Input : none
@@ -87,10 +86,11 @@ public:
     bool launch(int Key);
     
 private:
-    Level m_level;
+    Level m_level;  
     timer m_timer;
     bool m_pause;
     bool m_help;
+
     
     ////////////////////////////////////////////////////////////
     /// Input : a level 
