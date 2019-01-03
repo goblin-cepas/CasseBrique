@@ -17,11 +17,18 @@ std::string Save::getFile() const {
 void Save::setFile(std::string newFile) {
     this->file = newFile;
 }
+void Save::setNbLevel(int nb){
+  this->nbLevel = nb;  
+}
+int Save::getNbLevel()const {
+    return this->nbLevel;
+}
 
 void Save::initOutput() {
     this->of = new std::ofstream();
     this->of->open(this->file, std::ios::out | std::ios::trunc);
 }
+
 
 void Save::writeLine(std::string str) {
     (*this->of) << str << std::endl;
@@ -79,7 +86,6 @@ void Save::writeBricks(const std::vector<Brick>& bricks) {
 }
 
 void Save::writeSave(Level& level) {
-    rectangle ws;
     this->initOutput();
     if (!this->of->is_open()) {
         std::cerr << "ERROR: File opening failed !" << std::endl;
@@ -87,7 +93,7 @@ void Save::writeSave(Level& level) {
         this->writeLine("## This is the save file ##");
         this->writeLine("#------------");
         this->writeLine("[GameType]");
-        this->writeLine(std::to_string(level.getIsCampaign()));
+        this->writeLine(std::to_string(this->getNbLevel()));
         this->writeLine("[EndGameType]");
         this->writeLine("#------------");
         this->writeLine("[Bonus]");
@@ -274,7 +280,7 @@ void Save::readHP() {
 void Save::readGameType() {
     std::string buff = "";
     std::getline(*(this->ifile), buff);
-    this->loadedGame->setIsCampaign(std::atoi(buff.c_str()));
+    this->setNbLevel(std::atoi(buff.c_str()));
 
 }
 
@@ -389,3 +395,4 @@ Save::~Save() {
         delete this->loadedGame;
     }
 }
+
