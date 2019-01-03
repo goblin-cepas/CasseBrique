@@ -4,6 +4,7 @@
 #include "Bonus.h"
 #include "window.h"
 #include "Rectangle.h"
+#include"Log.h"
 
 
 class Paddle {
@@ -88,7 +89,7 @@ class Paddle {
   ///
   /// info :
   ////////////////////////////////////////////////////////////
-  bool move();
+  bool move(Log&);
   ////////////////////////////////////////////////////////////
   /// Input : Bonus&
   ///

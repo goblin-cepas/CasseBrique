@@ -399,8 +399,9 @@ void Home::menu() {
                 Level Camp(config.getLevel(i));
                 Game game(Camp);
                 if (runGame(game)) {
+                	Level currLevel=game.getLevel();
                     cmpgn.setNbLevel(i);
-                    cmpgn.writeSave(game.getLevel());
+                    cmpgn.writeSave(currLevel);
                     i = 6;
                 } else {
                     i++;
@@ -424,8 +425,9 @@ void Home::menu() {
                     Level Camp(config.getLevel(i));
                     Game game(Camp);
                     if (runGame(game)) {
+                    	Level currLevel=game.getLevel();
                         savedGame.setNbLevel(i);
-                        savedGame.writeSave(game.getLevel());
+                        savedGame.writeSave(currLevel);
                         i = 6;
                     } else {
                         i++;

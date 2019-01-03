@@ -39,12 +39,17 @@ void Paddle::setPaddleResistance(int NewResistance){
 
 //Method
 
-bool Paddle::move(){
-  int ch;bool move=false;
+bool Paddle::move(Log& log){
+
+  int ch;
+  bool move=false;
   rectangle newPattern=this->getPaddlePattern();
     switch (ch=getch()) {
 
         case KEY_LEFT:
+        {
+      std::string logEntry = std::to_string(ch);
+      log.write(logEntry);
       newPattern.LeftBottom.x--;
       newPattern.RightTop.x--;
       if(newPattern.LeftBottom.x>=0){
@@ -52,8 +57,10 @@ bool Paddle::move(){
       }
       move=true;
     break;
-
-        case KEY_RIGHT:
+      }
+        case KEY_RIGHT:{
+    std::string logEntry = std::to_string(ch);
+    log.write(logEntry);
     newPattern.LeftBottom.x++;
     newPattern.RightTop.x++;
     if(newPattern.RightTop.x<=59){
@@ -61,6 +68,7 @@ bool Paddle::move(){
     }
     move=true;
     break;
+    }
     }
   return move;
 }
