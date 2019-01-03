@@ -3,7 +3,7 @@ CXX_FLAGS=-g -O0 -ansi -std=c++11 -pedantic -Wall
 LD_FLAGS =
 
 PROGS= CasseBrique
-SOURCES= window.cpp Paddle.cpp Ball.cpp Bonus.cpp Brick.cpp Score.cpp Configuration.cpp Game.cpp Home.cpp Level.cpp Save.cpp Log.cpp
+SOURCES= window.cpp Paddle.cpp Ball.cpp Bonus.cpp Brick.cpp Score.cpp Configuration.cpp Game.cpp Home.cpp Level.cpp Save.cpp Log.cpp main.cpp
 HEADERS= window.h Paddle.h Ball.h Bonus.h Brick.h Score.h Configuration.h Game.h Home.h Level.h Rectangle.h Vector2.h Log.h Clock.h playerScore.h Velocity.h Save.h
 DEPFILE=.depend
 

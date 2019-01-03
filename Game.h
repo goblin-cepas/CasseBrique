@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "timer.h"
 #include "Save.h"
+#include "Log.h"
 
 class Game {
 public:
@@ -18,7 +19,7 @@ public:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    Level& getLevel()   ;
+    Level getLevel()const;
     
     ////////////////////////////////////////////////////////////
     /// Input : none
@@ -55,7 +56,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-    bool update();
+    bool update(Log &log);
     
     ////////////////////////////////////////////////////////////
     /// Input : an integer that represent an input 
@@ -65,7 +66,7 @@ public:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    bool quit(int Key);
+    bool quit(int Key, Log&);
     
     ////////////////////////////////////////////////////////////
     /// Input : an integer that represent an input
@@ -74,7 +75,7 @@ public:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    bool interrupt(int Key);
+    bool interrupt(int Key, Log&);
     
     /////////////////////////s///////////////////////////////////
     /// Input : an integer that represent an input
@@ -83,7 +84,7 @@ public:
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    bool launch(int Key);
+    bool launch(int Key, Log&);
     
 private:
     Level m_level;  
@@ -130,7 +131,7 @@ private:
 
 };
 
-void runGame(Game&);
+bool runGame(Game&);
 
 #endif /* GAME_H */
 

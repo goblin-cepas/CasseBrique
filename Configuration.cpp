@@ -330,7 +330,7 @@ bool Configuration::create() {
             }
             if (posX >= windowWidth - 5) {
                 posX = 0;
-                posY--;
+                posY -= 3;
                 if (posY < 2) {
                     posY = 11 + windowHeight - 15;
                     loop++;
@@ -387,7 +387,7 @@ bool Configuration::create() {
         vect1Ball.y = 11 + windowHeight - 2;
 
         vector2 vect2Ball;
-        vect2Ball.x = windowWidth / 2 + 1;
+        vect2Ball.x = windowWidth / 2;
         vect2Ball.y = 11 + windowHeight - 2;
 
         rectangle rectBall;
@@ -400,7 +400,7 @@ bool Configuration::create() {
 
         velocity veloc;
 
-        veloc.accel = 1.2f ;
+        veloc.accel = 1.2f;
         veloc.direction = vectVeloc;
 
         Ball ball(rectBall, ballColor, veloc, 400);
@@ -421,10 +421,26 @@ bool Configuration::create() {
 bool Configuration::brickCollide(rectangle &rect) {
     for (int i = 0; i < this->m_brickLevel.size(); i++) {
         rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
-        if ((((rect.LeftBottom.x > rectTry.LeftBottom.x) && (rect.LeftBottom.x < rect.RightTop.x)) || ((rect.RightTop.x > rectTry.LeftBottom.x) && (rect.RightTop.x < rect.RightTop.x))) && (((rect.LeftBottom.y < rectTry.LeftBottom.y) && (rect.LeftBottom.y > rectTry.RightTop.y)) || ((rect.RightTop.y < rectTry.LeftBottom.y) && (rect.RightTop.y > rectTry.RightTop.y)))) {
-            return true;
+
+        if (rect.LeftBottom.x >= rectTry.LeftBottom.x && rect.RightTop.x <= rectTry.LeftBottom.x) {
+            if (rect.LeftBottom.x >= rectTry.RightTop.x && rect.RightTop.x <= rectTry.RightTop.x) {
+                if (rect.LeftBottom.y >= rectTry.LeftBottom.y && rect.RightTop.y <= rectTry.LeftBottom.y) {
+                    if (rect.LeftBottom.y >= rectTry.RightTop.y && rect.RightTop.y <= rectTry.RightTop.y) {
+                        return true;
+                    }
+                }
+            }
         }
     }
+
+
+    /*
+        for (int i = 0; i < this->m_brickLevel.size(); i++) {
+            rectangle rectTry = this->m_brickLevel[i].getBrickPattern();
+            if ((((rect.LeftBottom.x > rectTry.LeftBottom.x) && (rect.LeftBottom.x < rect.RightTop.x)) || ((rect.RightTop.x > rectTry.LeftBottom.x) && (rect.RightTop.x < rect.RightTop.x))) && (((rect.LeftBottom.y < rectTry.LeftBottom.y) && (rect.LeftBottom.y > rectTry.RightTop.y)) || ((rect.RightTop.y < rectTry.LeftBottom.y) && (rect.RightTop.y > rectTry.RightTop.y)))) {
+                return true;
+            }
+        }*/
     return false;
 }
 

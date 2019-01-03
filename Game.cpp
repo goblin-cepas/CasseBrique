@@ -32,7 +32,7 @@ Game::~Game() {
   m_level.~Level();
 }
 
-Level& Game::getLevel(){return m_level;}
+Level Game::getLevel()const{return m_level;}
 timer& Game::getTimer(){return m_timer;}
 bool Game::getPause()const{return m_pause;}
 bool Game::getHelp()const{return m_help;}
@@ -44,40 +44,45 @@ void Game::setPause(bool newPause){m_pause=newPause;}
 void Game::setHelp(bool newHelp){m_help=newHelp;}
 
 
-bool Game::update(){
-  int ch;
-  this->interrupt(ch=getch());
+bool Game::update(Log &log){
+  int ch; bool hasBeenUpdated=false;
+  this->interrupt(ch,log);
   
   if(this->getPause()==true){
     return false;
   }
   else{
+  		m_level.getTabPaddle()[0].move(log);
 
-   	//Updating the paddle
-    m_level.getTabPaddle()[0].move();
+  		int timerSec=this->getTimer().elapsed;
+
+  	    //Update of the timer
+    	time(&this->getTimer().end);
+    	unsigned int elaTmp = difftime(this->getTimer().end, this->getTimer().start);
+    	this->m_timer.elapsed = elaTmp;
     
-    //Updating the ball
-    getLevel().getTabBall()[0].move();
-
+    	if(m_timer.elapsed-timerSec!=0 && hasBeenUpdated==false){
+  			//Updating the ball
+    		m_level.getTabBall()[0].move();
+    		hasBeenUpdated=true;
+		}
+		else if(m_timer.elapsed-timerSec==0){
+			hasBeenUpdated=false;
+		}
     //Updating the state of each bricks
     for(size_t i = 0; i<getLevel().getTabBrick().size();i++){
       if(getLevel().getTabBrick()[i].getBrickPattern().LeftBottom.x==getLevel().getTabBall()[0].getBallPattern().LeftBottom.x 
-        && getLevel().getTabBrick()[i].getBrickPattern().LeftBottom.y==getLevel().getTabBall()[0].getBallPattern().LeftBottom.y ){
-        getLevel().getTabBrick()[i].hit();
+        && getLevel().getTabBrick()[i].getBrickPattern().LeftBottom.y==getLevel().getTabBall()[0].getBallPattern().LeftBottom.y){
+        m_level.getTabBrick()[i].hit();
       }
     }
-    
-    //Update of the timer
-    time(&this->getTimer().end);
-    unsigned int elaTmp = difftime(this->getTimer().end, this->getTimer().start);
-    this->m_timer.elapsed = elaTmp;
-    
-    return true;
   }
 }
 
-bool Game::quit(int key){
+bool Game::quit(int key, Log &log){
   if((key=getch())=='q'){
+  	std::string logEntry = std::to_string(key);
+  	log.write(logEntry);
     Window quitScreen(10,20,80,20,'+');
     quitScreen.setCouleurBordure(BRED);
 	quitScreen.setCouleurFenetre(WBLACK);
@@ -89,12 +94,16 @@ bool Game::quit(int key){
 		switch (ch=getch()){
 			case 'y':
 			{
+			 	std::string logEntry = std::to_string(ch);
+  				log.write(logEntry);
 				save=true;
 				keypressed=true;
 				break;
 			}
 			case 'n':
 			{
+			  	std::string logEntry = std::to_string(key);
+  				log.write(logEntry);
 				save=false;
 				keypressed=true;
 				break;
@@ -102,8 +111,9 @@ bool Game::quit(int key){
 		}
 	}while(keypressed==false);
 	if(save==true){
+		Level currLevel=this->getLevel();
     	Save save;
-    	save.writeSave(this->getLevel());
+    	save.writeSave(currLevel);
 
     	this->~Game();
 
@@ -118,28 +128,32 @@ bool Game::quit(int key){
   }
 }
 
-bool Game::interrupt(int key){
+bool Game::interrupt(int key,Log& log){
   bool hasBeenInterrupted=false;
-  if(this->getPause()==false){
-    switch(key){
+    switch(key=getch()){
     case 'p':
       {
-		Window pauseScreen(10,20,80,20,'+');
+       	std::string logEntry = std::to_string(key);
+  		log.write(logEntry);
+      	Window pauseScreen(10,20,80,20,'+');
 		this->setPause(true);
 		pauseScreen.setCouleurBordure(BRED);
-	  	pauseScreen.setCouleurFenetre(WBLACK);
-	  	pauseScreen.print(7,3,"Paused");
+  		pauseScreen.setCouleurFenetre(WBLACK);
+  		pauseScreen.print(7,3,"Paused");
 		do{
-
+			usleep(600);
 		}while((key=getch())!='p');
 		hasBeenInterrupted=true;
 		break;
       }
     case 'h':
       {
+
+      	std::string logEntry = std::to_string(key);
+  		log.write(logEntry);
+		Window helpScreen(20,45,2,15,'+');
 		this->setPause(true);
 		this->setHelp(true);
-		Window helpScreen(20,45,2,15,'+');
 		Window pauseScreen(10,20,80,20,'+');
 		pauseScreen.setCouleurBordure(BRED);
 		pauseScreen.setCouleurFenetre(WBLACK);
@@ -152,20 +166,22 @@ bool Game::interrupt(int key){
 		helpScreen.print(1,10,"To resume the game press the 'h' key");
 		helpScreen.print(1,13,"To just pause the game press the 'p' key");
 		do{
-	  	usleep(600);
+	  		usleep(600);
 		}while((key=getch())!='h');
 		helpScreen.setCouleurBordure(WBLACK);
 		hasBeenInterrupted=true;
 		break;
       } 
+      this->setHelp(false);
     }
-  }
-  this->setPause(false);
+	this->setPause(false);
   return hasBeenInterrupted;
 }
 
-bool Game::launch(int key){
+bool Game::launch(int key, Log &log){
   if((key=getch())==' '){
+  	std::string logEntry = std::to_string(key);
+  	log.write(logEntry);
     this->setPause(false);
     return true;
   }
@@ -174,30 +190,11 @@ bool Game::launch(int key){
   }
 }
 
-/*bool coordFree(int x, int y, Level &currLevel){
-  bool isFreeCoord=false;
-  if(((x!=currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.x 
-  || x!=currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.x) 
-    && (y!=currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y 
-      || y!=currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.y)) 
-    && ((x<currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.x)
-      ||(x>currLevel.getTabPaddle()[0].getPaddlePattern().RightTop.x)
-      && (y>currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y)
-      ||y<currLevel.getTabPaddle()[0].getPaddlePattern().LeftBottom.y))
-  {
-    //if !Brick
-
-    //if!Ball
-    isFreeCoord=true;
-  }
-  return isFreeCoord;
-}*/
-
-
-
-void runGame(Game &testGame){
+bool runGame(Game &testGame){
   int ch;
   int h=35,w=60;
+
+  Log log;
   
   Window menuScreen(5,80,50,1,'+');
   Window gameScreen(h,w,59,10,'+');	
@@ -208,7 +205,7 @@ void runGame(Game &testGame){
   vector2 vectVeloc;
   vectVeloc.x = 0;
   vectVeloc.y = -1;
-  veloc.accel = 1.1f;
+  veloc.accel = 1.6f;
   veloc.direction = vectVeloc;
   
   testGame.getLevel().getTabBall()[0].setVelocity(veloc);
@@ -220,7 +217,7 @@ void runGame(Game &testGame){
     menuScreen.setCouleurBordure(BRED);
     menuScreen.setCouleurFenetre(WBLACK);
     menuScreen.print(1,1,"Press Space to launch the ball !");
-    launched = testGame.launch(ch);
+    launched = testGame.launch(ch, log);
     /*------------------Display of the paddle--------------------------*/
 
     for(size_t x=0;x<w;++x){
@@ -292,7 +289,6 @@ void runGame(Game &testGame){
 	  if(++tabB>=testGame.getLevel().getTabBrick().size()){tabB=0;}
 	}
 	
-	
 	/*------------------End display of the bricks--------------------*/
 
 	/*------------------Display of the ball----------------------------*/
@@ -313,8 +309,8 @@ void runGame(Game &testGame){
   }while(launched==false);
   gameScreen.setCouleurBordure(BYELLOW);
   std::vector<playerScore> tabScore=testGame.getLevel().createMenu();
-  short int tabI=0;short int cpt=0; int playerHp; int playerSc;
-  int timerSec; int timerSec5; int quit;
+  short int tabI=0; int playerHp; int playerSc;
+  int timerSec; int timerSec5; int quit;bool quitTrouve;
   do{
     
     timerSec=testGame.getTimer().elapsed;
@@ -367,7 +363,7 @@ void runGame(Game &testGame){
     
     menuScreen.print(1,1,"Current Score: "+std::to_string(playerSc));
     menuScreen.print(1,2,"Player life: "+std::to_string(playerHp));
-    menuScreen.print(1,3,"Time: "+std::to_string(timerSec)+"/200");
+
     
     /*------------------End player stats section-----------------------*/
    
@@ -473,23 +469,15 @@ void runGame(Game &testGame){
 		&& y==testGame.getLevel().getTabPaddle()[0].getPaddlePattern().RightTop.y){
 	  gameScreen.print(x,y,' ',WBLACK);
 	}
-	
       }
     }  
     /*------------------End display of the objects------------------*/
-    testGame.update();
 
-  }while((testGame.quit(quit)==false && testGame.getTimer().elapsed!=200) && testGame.getLevel().getHp()!=0);
+    //Updating the state of the other objects
+    testGame.update(log);
 
-  //"Enter name screen" ??? 
-}
+    quitTrouve=testGame.quit(quit,log);
+  }while(quitTrouve!=true  && testGame.getLevel().getHp()!=0);
 
-int main(){
-  Configuration config;
-  config.Init();
-  Game testGame(config.getLevel(1));  
-  startProgramX();
-  runGame(testGame);
-  stopProgramX();
-  return 0;
+  return quitTrouve;
 }
