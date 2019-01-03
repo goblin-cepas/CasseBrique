@@ -30,23 +30,16 @@ public:
     ////////////////////////////////////////////////////////////
     select getSelect() const;
 
-    ////////////////////////////////////////////////////////////
-    /// Input : Nothing 
-    ///
-    /// Result : Draw the menu interface.
-    /// 
-    /// info :
-    ////////////////////////////////////////////////////////////
-    bool userInterface();
-
+   
     ////////////////////////////////////////////////////////////
     /// Input : select Selection
     ///
-    /// Result : Launch the game with the selected option.
+    /// Result : Display the main menu and launch the game with
+    /// the selected option.
     /// 
     /// info :
     ////////////////////////////////////////////////////////////
-    bool launcher();
+    void menu();
 
 
 private:
@@ -71,17 +64,14 @@ private:
     //WINDOW *create_newwin(int height, int width, int starty, int startx);
 
     ////////////////////////////////////////////////////////////
-    /// Input : WINDOW *localWindow 
+    /// Input : Nothing 
     ///
-    /// Result : Destoy a window
+    /// Result : Draw the menu interface.
     /// 
-    /// info : 
+    /// info :
     ////////////////////////////////////////////////////////////
+    void userInterface();
 
-   // void destroy_win(WINDOW *local_win);
-
-    
-    //void print_menu(WINDOW *menu_win, int highlight);
 };
 
 #endif /* HOME_H */

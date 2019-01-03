@@ -16,9 +16,9 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-
+    
     Save();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -26,7 +26,7 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-
+    
     virtual ~Save();
 
     ////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ public:
     /// info :
     ////////////////////////////////////////////////////////////
     std::string getFile() const;
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : std::string file
     ///
@@ -45,9 +45,9 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-
+    
     void setFile(std::string file);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : Level& level
     ///
@@ -56,9 +56,9 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-
+    
     void writeSave(Level& level);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : std::string file
     ///
@@ -67,10 +67,10 @@ public:
     /// info : Once loaded, the method getLoadedGame must be
     /// called in order to retreive the level.
     ////////////////////////////////////////////////////////////
-
+    
     void loadSave(std::string file);
-
-
+    
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -78,15 +78,35 @@ public:
     ///
     /// info :
     ////////////////////////////////////////////////////////////
-
+    
     Level* getLoadedGame();
-
-
+    
+    ////////////////////////////////////////////////////////////
+    /// Input : int nb
+    ///
+    /// Result : Set the number associated to the level.
+    ///
+    /// info : -1 means the level is not a part of the campaign, 
+    /// levels from the campaign take a number from 1 to 5.
+    ////////////////////////////////////////////////////////////
+    void setNbLevel(int nb);
+    
+    ////////////////////////////////////////////////////////////
+    /// Input : None
+    ///
+    /// Result : Return the number associated to the level.
+    ///
+    /// info : -1 means the level is not a part of the campaign, 
+    /// levels from the campaign take a number from 1 to 5.
+    ////////////////////////////////////////////////////////////
+    int getNbLevel()const;
+    
 private:
     std::string file;
     std::ofstream* of = NULL;
     std::ifstream* ifile = NULL;
     Level* loadedGame = NULL;
+    int nbLevel =-1;
 
     ////////////////////////////////////////////////////////////
     /// Input : None
@@ -96,9 +116,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void initLevel();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : std::string newfile
     ///
@@ -107,9 +127,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void initInput(std::string newFile);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -117,10 +137,10 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readBonus();
-
-
+   
+  
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -129,9 +149,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void initOutput();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : const std::vector<Paddle>& paddles
     ///
@@ -139,9 +159,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void writePaddles(const std::vector<Paddle>& paddles);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : std::string str
     ///
@@ -149,19 +169,19 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void writeLine(std::string str);
-
+    
     ////////////////////////////////////////////////////////////
-    /// Input : const std::vector<Ball>& balls
+    /// Input : const std::vector<Ball>& balls 
     ///
     /// Result : Write the ball preset.
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void writeBalls(const std::vector<Ball>& balls);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : const std::vector<Brick>& bricks
     ///
@@ -169,9 +189,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void writeBricks(const std::vector<Brick>& bricks);
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -179,10 +199,10 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
-
+    
+    
     void readGameType();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -190,10 +210,30 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
-
+    
+    
     void readPaddle();
-
+    
+    ////////////////////////////////////////////////////////////
+    /// Input : None
+    ///
+    /// Result : Retreive the game window presets.
+    ///
+    /// info : This method is ONLY meant to be use as a submethod
+    ////////////////////////////////////////////////////////////
+    
+    void readGameWindow();
+    
+    ////////////////////////////////////////////////////////////
+    /// Input : None
+    ///
+    /// Result : Retreive the menu window presets.
+    ///
+    /// info : This method is ONLY meant to be use as a submethod
+    ////////////////////////////////////////////////////////////
+    
+    void readMenuWindow();
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -201,9 +241,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readBalls();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -211,9 +251,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readScore();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -221,9 +261,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readHP();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -231,9 +271,9 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readJump();
-
+    
     ////////////////////////////////////////////////////////////
     /// Input : None
     ///
@@ -241,10 +281,11 @@ private:
     ///
     /// info : This method is ONLY meant to be use as a submethod
     ////////////////////////////////////////////////////////////
-
+    
     void readBricks();
-
+    
 
 };
 
 #endif /* SAVE_H */
+

@@ -3,9 +3,10 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Score.h"
-//#include "Save.h"
-//Colo);
-//Color WRED(WRED);
+#include "Configuration.h"
+#include "Level.h"
+#include "Save.h"
+#include "Game.h"
 
 Home::Home() : m_selection(empty) {
 }
@@ -21,46 +22,12 @@ Home::select Home::getSelect()const {
     return this->m_selection;
 }
 
-bool Home::launcher() {
-    if (this->m_selection == empty) {
-        std::cerr << "LAUNCHING ERROR: Can't create or load a game, no game mode selected !" << std::endl;
-        return true;
-    } else {
-        if (this->m_selection == scoreboard) {
-            Score Scoreboard;
-            Scoreboard.printScoreScreen();
-        }
-       /* if (this->m_selection == cont) {
-            Save Savedgame();
-            Savedgame.load();
-        }
-        else{
-            Save Newgame("bricksave.save");
-            Newgame.createsave(this->m_selection);
-        }*/
-    }
+void Home::userInterface() {
 
-    return false;
-}
 
-void Home::setSelect(select New) {
-    this->m_selection = New;
 
-}
-
-bool Home::userInterface() {
-
-    /* NOTE POUR LE MOI DU PLUS TARD OU LE CAMARADE PERDU : Cette methode pour laquelle j'en ai chié (parce que
-     je suis débile nécessite une optimisation certaine : tous les points de répétitions doivent être remplacés
-     par une "sous méthode" pour faciliter la lecture du code, il faudrait également faire un truc plus
-     propre pour la manipulation des coordonnées parce que je me suis perdu plein de fois dans ce code de 
-     merde...*/
-
-    
-    int x, buff, one, two, three, four, five, six, seven, eight, nine; // ces variables vont stockées les X de chaque proposition, c'est degueulasse mais provisoire...
+    int x, buff, one, two, three, four, five, six, seven, eight, nine;
     bool failed = false;
-    //    Colo);
-    //   Color WRED(WRED);
     Window menuWindow(50, 50, 0, 0);
     select c = empty;
 
@@ -222,8 +189,6 @@ bool Home::userInterface() {
                     menuWindow.print(25, 18, "QUIT", WRED);
 
                 }
-                //x--;
-                std::cerr << x;
                 break;
 
             case KEY_DOWN:
@@ -347,14 +312,13 @@ bool Home::userInterface() {
                     menuWindow.print(25, 17, "CONTINUE");
                     menuWindow.print(25, 18, "QUIT", WRED);
                 }
-                //x++;
-                std::cerr << x;
+               
                 break;
-            case 10: //le KEY_ENTER ne marchait pas, mais va savoir pourquoi 10 correspond a l'action d'appuyer sur entrer...
+            case 10:
                 refresh();
                 if (x == one) {
                     c = arcade1;
-                    ch = 0; // Je pense que cette instruction sert a rien, PENSER A LA SUPPRIMER
+                    ch = 0;
                 }
                 if (x == two) {
                     c = arcade2;
@@ -389,19 +353,95 @@ bool Home::userInterface() {
                 }
 
                 break;
-            default:
-                //std::cerr<<"Josua est NULL"<<std::endl; //c'est du débug hein, en vrai j'suis plutot pas mal comme gars
-                break;
 
         }
     }
-    if (c != empty) {
-        std::cout << "HOURRAY !" << std::endl;
-    } else {
-        failed = true;
+    if (c == empty) {
+        std::cerr << "ERROR : Selection ended with no option selected." << std::endl;
     }
-   
+
     this->setSelect(c);
-    return failed;
+}
+
+void Home::menu() {
+    this->userInterface();
+    Configuration config;
+    config.Init();
+
+    if (this->m_selection == empty) {
+        std::cerr << "ERROR: Can't create or load a game, no game mode selected !" << std::endl;
+
+    } else {
+        if (m_selection == arcade1) {
+            Level arc1(config.getLevel(1));
+            Game game(arc1);
+            runGame(game);
+        } else if (m_selection == arcade2) {
+            Level arc2(config.getLevel(2));
+            Game game(arc2);
+            runGame(game);
+        } else if (m_selection == arcade3) {
+            Level arc3(config.getLevel(3));
+            Game game(arc3);
+            runGame(game);
+        } else if (m_selection == arcade4) {
+            Level arc4(config.getLevel(4));
+            Game game(arc4);
+            runGame(game);
+        } else if (m_selection == arcade5) {
+            Level arc5(config.getLevel(5));
+            Game game(arc5);
+            runGame(game);
+        } else if (m_selection == campaign) {
+            Save cmpgn;
+            int i = 1;
+            while (i < 6) {
+                Level Camp(config.getLevel(i));
+                Game game(Camp);
+                if (runGame(game)) {
+                    cmpgn.setNbLevel(i);
+                    cmpgn.writeSave(game.getLevel());
+                    i = 6;
+                } else {
+                    i++;
+                }
+            }
+        } else if (this->m_selection == scoreboard) {
+            Score scoreboard;
+            scoreboard.printScoreScreen();
+        } else if (this->m_selection == cont) {
+            Save savedGame;
+            savedGame.loadSave(savedGame.getFile());
+            Level loadedGame = *(savedGame.getLoadedGame());
+            if (savedGame.getNbLevel() == -1) {
+                Game lGame(loadedGame);
+                runGame(lGame);
+            } else if (savedGame.getNbLevel() > 0) {
+                Game lGame(loadedGame);
+                runGame(lGame);
+                int i = savedGame.getNbLevel();
+                while (i < 6) {
+                    Level Camp(config.getLevel(i));
+                    Game game(Camp);
+                    if (runGame(game)) {
+                        savedGame.setNbLevel(i);
+                        savedGame.writeSave(game.getLevel());
+                        i = 6;
+                    } else {
+                        i++;
+                    }
+                }
+            } else {
+                std::cerr << "ERROR, The savefile cannot be read : INVALID GAMETYPE"
+                        << std::endl;
+
+            }
+        }
+    }
+}
+
+
+void Home::setSelect(select New) {
+    this->m_selection = New;
 
 }
